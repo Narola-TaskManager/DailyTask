@@ -125,5 +125,8 @@
             }
         }
     },
-    "defaultProject": "Daily-Task-manager"
+    "defaultProject": "Daily-Task-manager",
+    "cli": {
+        "analytics": false
+    }
 }

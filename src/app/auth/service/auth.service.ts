@@ -1,15 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SharedService } from 'src/app/shared/shared.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
+    private authSource = new BehaviorSubject('default');
+    authStatus = this.authSource.asObservable();
+
+    changeAuthStatus(message) {
+        this.authSource.next(message);
+    }
+
     constructor(
         private http: HttpClient,
-        private shareDataService: SharedService,
 
     ) { }
 
@@ -20,7 +26,21 @@ export class AuthService {
     setToken(response) {
         localStorage.clear();
         window.localStorage.setItem('accessToken', response[`token`]);
-        this.shareDataService.changeAuthStatus(true);
+        this.changeAuthStatus('login');
+    }
+
+    checkUserLoggedIn() {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    logout() {
+        localStorage.clear();
+        this.changeAuthStatus('logout');
     }
 
 }

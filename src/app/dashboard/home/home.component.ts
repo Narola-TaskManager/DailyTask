@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { DashboardService } from '../service/dashboard.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/service/auth.service';
 
 @Component({
     selector: 'app-home',
@@ -21,11 +22,14 @@ export class HomeComponent implements OnInit {
         { statusId: 3, statusTitle: 'REMAINING' }
     ];
     isControlsVisible = false;
-    isDissabled = false;
+    isBtnDissabled = false;
+    isNewtaskDissabled = false;
     projectwiseTaskList = [];
+    disableEod = true;
 
     constructor(
         private dashboardService: DashboardService,
+        private authService: AuthService,
         private formBuilder: FormBuilder,
         private router: Router,
     ) { }
@@ -80,6 +84,7 @@ export class HomeComponent implements OnInit {
         this.dashboardService.getAllSaveTask().toPromise().then(res => {
 
             if (res && res[`data`] && res[`data`][`taskList`].length > 0) {
+                this.disableEod = false;
                 const taskList = res[`data`][`taskList`];
                 taskList.forEach(element => {
                     if (element[`isEodUpdate`]) {
@@ -87,7 +92,9 @@ export class HomeComponent implements OnInit {
                         this.taskForm.patchValue({
                             isEodUpdate: true
                         });
-                        this.isDissabled = true;
+                        this.isNewtaskDissabled = true;
+                        this.isBtnDissabled = true;
+                        this.disableEod = true;
                     }
                     this.projectDetail.push(this.addNewControlWithValue(element));
                 });
@@ -96,7 +103,7 @@ export class HomeComponent implements OnInit {
             }
         }).catch(err => {
             if (err[`error`] && err[`error`][`status`] === 401) {
-                localStorage.clear();
+                this.authService.logout();
                 this.router.navigate(['/']);
             }
         });
@@ -105,6 +112,7 @@ export class HomeComponent implements OnInit {
     // Add new task
     addNewTaskBlogs() {
         this.submitted = false;
+        this.isBtnDissabled = false;
         this.projectDetail.push(this.addNewControlWithValue());
     }
 
@@ -117,6 +125,7 @@ export class HomeComponent implements OnInit {
         const groupItems = this.projectDetail.controls;
 
         if (this.isControlsVisible) {
+            this.isBtnDissabled = false;
             groupItems.forEach((element) => {
                 const actualHr = element[`controls`][`actualHr`];
                 const status = element[`controls`][`status`];
@@ -154,6 +163,7 @@ export class HomeComponent implements OnInit {
             if (res && res[`data`]) {
                 (this.projectDetail).clear();
                 const taskList = res[`data`][`taskList`];
+                this.disableEod = false;
                 taskList.forEach((element) => {
                     setTimeout(() => {
                         this.projectDetail.push(this.addNewControlWithValue(element));
@@ -161,15 +171,16 @@ export class HomeComponent implements OnInit {
                 });
             }
 
+            this.isBtnDissabled = true;
             if (this.isControlsVisible) {
-                this.isDissabled = true;
+                this.isNewtaskDissabled = true;
+                this.disableEod = true;
                 Swal.fire({
                     text: 'Your EOD update has been succussfully sent.',
                     icon: 'success',
                     confirmButtonText: 'Ok',
                 }).then();
             } else {
-                this.submitted = false;
                 Swal.fire({
                     text: 'Successfully Added/Updated',
                     icon: 'success',
@@ -181,7 +192,7 @@ export class HomeComponent implements OnInit {
                 this.backendError = err.error[`errorMessage`];
             }
             if (err[`error`] && err[`error`][`status`] === 401) {
-                localStorage.clear();
+                this.authService.logout();
                 this.router.navigate(['/']);
             }
         });

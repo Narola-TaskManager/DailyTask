@@ -15,6 +15,9 @@
                                 *ngIf="isLogin">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" [routerLink]="['/updates']" *ngIf="isLogin">View Updates</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" *ngIf="isLogin" (click)="logout()" [routerLink]="['/']">Logout</a>
                         </li>
                     </ul>

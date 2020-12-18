@@ -12,7 +12,6 @@ export class HeaderComponent implements OnInit {
 
     constructor(
         private authService: AuthService
-
     ) {
         this.isLogin = this.authService.checkUserLoggedIn();
         this.authService.authStatus.subscribe((message) => {
@@ -28,5 +27,4 @@ export class HeaderComponent implements OnInit {
         this.authService.logout();
         this.isLogin = this.authService.checkUserLoggedIn();
     }
-
 }

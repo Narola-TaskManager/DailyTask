@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NgxPermissionsService } from 'ngx-permissions';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -16,16 +17,15 @@ export class AuthService {
 
     constructor(
         private http: HttpClient,
-
     ) { }
 
     login(requestPayload) {
         return this.http.post('/auth/login', requestPayload);
     }
 
-    setToken(response) {
+    setToken(token) {
         localStorage.clear();
-        window.localStorage.setItem('accessToken', response[`token`]);
+        window.localStorage.setItem('accessToken', token);
         this.changeAuthStatus('login');
     }
 
@@ -39,6 +39,7 @@ export class AuthService {
     }
 
     logout() {
+        // this.permissionsService.flushPermissions();
         localStorage.clear();
         this.changeAuthStatus('logout');
     }

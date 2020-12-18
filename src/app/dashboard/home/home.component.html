@@ -10,7 +10,7 @@
         <a href="javascript:void(0)" class="ml-auto" (click)="addNewTaskBlogs()" *ngIf="!isNewtaskDissabled">
             <i class="fa fa-plus-circle " aria-hidden="true"></i> Add New Task
         </a>
-        <a href="javascript:void(0)" class="ml-auto dissable" *ngIf="isNewtaskDissabled"
+        <a href="javascript:void(0)" class="ml-auto disable" *ngIf="isNewtaskDissabled"
             ngbTooltip="End of day status already updated. Can't add new task." placement="top">
             <i class="fa fa-plus-circle " aria-hidden="true"></i> Add New Task
         </a>
@@ -25,7 +25,6 @@
             <th *ngIf="isControlsVisible">Actual Hour</th>
             <th *ngIf="isControlsVisible">Status </th>
             <th *ngIf="isControlsVisible">Tracker</th>
-            <!-- <th>History</th> -->
         </thead>
         <tbody>
             <ng-container formArrayName="taskList"
@@ -117,11 +116,6 @@
                         <input type="checkbox" class="form-check-input ml-3" id="exampleCheck1"
                             formControlName="isTrackerUsed">
                     </td>
-                    <!-- <td>
-                        <div class="text-center">
-                            <i class="fa fa-history" aria-hidden="true"></i>
-                        </div>
-                    </td> -->
                 </tr>
             </ng-container>
         </tbody>

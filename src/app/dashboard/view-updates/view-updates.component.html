@@ -2,38 +2,39 @@
 
     <div class="row">
         <div class="col-sm-6">
-            <select class="form-control">
-                <option value="null">Select Project</option>
-                <option value="1">
-                    abc
+            <select class="form-control" formControlName="projectId" (change)="onChangeProject()">
+                <option value="">Select Project</option>
+                <option *ngFor="let project of projectsList" [value]="project.projectId">
+                    {{project.projectName}}
                 </option>
             </select>
         </div>
         <div class="col-sm-6">
-            <select class="form-control">
-                <option value="null">Select Project</option>
-                <option value="1">
-                    abc
+            <select class="form-control" formControlName="userId" (change)="onChangeEmployee()">
+                <option value="">Select employee</option>
+                <option value="0">All</option>
+                <option *ngFor="let employee of employeeList" [value]="employee.userId">
+                    {{employee.userName}}
                 </option>
             </select>
         </div>
     </div>
 
-    <div class="row mt-3 ml-1">
+    <div class="row mt-3 ml-1" *ngIf="dailyUpdateDetail.length > 0">
         <label> Show entries</label>
         <select class="form-control select-sm ml-3" formControlName="itemsPerPage" (change)="changePagesize()">
             <option [ngValue]="10"> 10 </option>
             <option [ngValue]="5"> 5 </option>
-            <option [ngValue]="3"> 3</option>
+            <option [ngValue]="3"> 3 </option>
         </select>
     </div>
 
-    <div class="row mt-3">
+    <div class="row mt-3" *ngIf="dailyUpdateDetail.length > 0">
         <div class="col-12">
-            <table class="table table-hover" *ngIf="updateDetail">
+            <table class="table table-hover">
                 <tr>
-                    <th>Date</th>
                     <th>Employee Name</th>
+                    <th>Project</th>
                     <th>Task</th>
                     <th>Description </th>
                     <th>Estimated hour </th>
@@ -42,23 +43,31 @@
                     <th>Tracker</th>
                 </tr>
                 <tr
-                    *ngFor="let task of updateDetail | slice: pageSize | slice: 0:f['itemsPerPage']['value'] ; let i = index">
-                    <td>{{task.date}}</td>
-                    <td>{{task.employeeName}}</td>
-                    <td>{{task.task}}</td>
-                    <td>{{task.description}}</td>
-                    <td>{{task.estimatedHour}}</td>
-                    <td>{{task.actualHour}}</td>
-                    <td>{{task.status}}</td>
-                    <td>{{task.tracker}}</td>
+                    *ngFor="let task of dailyUpdateDetail | slice: pageSize | slice: 0:f['itemsPerPage']['value'] ; let i = index">
+                    <td>{{task.userName}}</td>
+                    <td>{{task.projectName}}</td>
+                    <td>{{task.taskMasterTitle}}</td>
+                    <td>{{task.taskDesc}}</td>
+                    <td>{{task.estHr}}</td>
+                    <td>{{task.actualHr}}</td>
+                    <td>{{task.statusTitle}}</td>
+                    <td>
+                        <span *ngIf="task.isTrackerUsed">
+                            With Tracker
+                        </span>
+                        <span *ngIf="!task.isTrackerUsed">
+                            Without Tracker
+                        </span>
+                    </td>
                 </tr>
             </table>
         </div>
     </div>
-    <div class="row mt-4 float-right">
+    <div class="row mt-4 float-right" *ngIf="dailyUpdateDetail.length > 0">
         <div class="col-12">
-            <ngb-pagination [collectionSize]="updateDetail.length" #numPages [pageSize]="f['itemsPerPage']['value']"
-                [(page)]="currentPage" (pageChange)="onPageChange(currentPage)"></ngb-pagination>
+            <ngb-pagination [collectionSize]="dailyUpdateDetail.length" #numPages
+                [pageSize]="f['itemsPerPage']['value']" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
+            </ngb-pagination>
         </div>
     </div>
 

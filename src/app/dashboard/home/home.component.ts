@@ -4,7 +4,6 @@ import { DashboardService } from '../service/dashboard.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/service/auth.service';
-
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -31,7 +30,7 @@ export class HomeComponent implements OnInit {
         private dashboardService: DashboardService,
         private authService: AuthService,
         private formBuilder: FormBuilder,
-        private router: Router,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -64,7 +63,7 @@ export class HomeComponent implements OnInit {
 
     // Bind projct dropdown
     getProjectList() {
-        this.dashboardService.getProjects().toPromise().then(res => {
+        this.dashboardService.getProjectsAndTask().toPromise().then(res => {
             if (res && res[`data`]) {
                 this.projectList = res[`data`];
             }

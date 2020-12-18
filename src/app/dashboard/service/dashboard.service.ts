@@ -10,8 +10,8 @@ export class DashboardService {
         private http: HttpClient,
     ) { }
 
-    getProjects() {
-        return this.http.get('/projects');
+    getProjectsAndTask() {
+        return this.http.get('/projects/taskmasters');
     }
 
     getAllSaveTask() {
@@ -26,4 +26,15 @@ export class DashboardService {
         return this.http.post('/tasks', requestPayload);
     }
 
+    getProject() {
+        return this.http.get('/projects/byprojecthead');
+    }
+
+    getUserByProjects(projectId) {
+        return this.http.get('/projects/' + projectId + '/users ');
+    }
+
+    getTaskdetail(projectId, userId) {
+        return this.http.get('/tasks/report?projectId=' + projectId + '&userId=' + userId);
+    }
 }

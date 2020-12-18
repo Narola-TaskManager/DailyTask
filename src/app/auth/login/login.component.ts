@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions';
 import { AuthService } from '../service/auth.service';
 
 @Component({
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
     constructor(
         private router: Router,
         private formBuilder: FormBuilder,
-        private authService: AuthService
+        private authService: AuthService,
+        private permissionsService: NgxPermissionsService
     ) { }
 
     ngOnInit(): void {
@@ -44,8 +46,15 @@ export class LoginComponent implements OnInit {
         }
         this.authService.login(this.loginForm.value).toPromise().then(res => {
             if (res && res[`data`]) {
-                this.authService.setToken(res[`data`]);
-                this.router.navigate(['/dashboard']);
+                this.authService.setToken(res[`data`].token);
+                const permissionsArr = [res[`data`].roleId];
+                localStorage.setItem('userrole', JSON.stringify(permissionsArr));
+                this.permissionsService.loadPermissions(permissionsArr);
+                if (res[`data`].roleId === 57) {
+                    this.router.navigate(['/dashboard']);
+                } else {
+                    this.router.navigate(['/updates']);
+                }
             }
         }).catch(err => {
             if (err && err.error && err.error.errorMessage) {

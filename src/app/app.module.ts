@@ -9,6 +9,8 @@ import { CoreModule } from './core/core.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShareModule } from './share/share.module';
 import { AuthenticationGuard } from './core/guard/authentication.guard';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
     declarations: [
@@ -22,10 +24,12 @@ import { AuthenticationGuard } from './core/guard/authentication.guard';
         HttpClientModule,
         CoreModule,
         NgbModule,
-        ShareModule
+        LayoutModule,
+        ShareModule,
+        NgxPermissionsModule.forRoot()
     ],
     providers: [
-        AuthenticationGuard,
+        AuthenticationGuard
     ],
     bootstrap: [AppComponent]
 })

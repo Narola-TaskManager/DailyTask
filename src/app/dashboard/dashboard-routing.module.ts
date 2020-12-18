@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthenticationGuard } from '../core/guard/authentication.guard';
 import { HomeComponent } from './home/home.component';
 import { ViewUpdatesComponent } from './view-updates/view-updates.component';
@@ -10,12 +11,24 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: HomeComponent,
-        canActivate: [AuthenticationGuard],
+        canActivate: [NgxPermissionsGuard],
+        data: {
+            permissions: {
+                only: '57',
+                redirectTo: '/updates'
+            }
+        }
     },
     {
         path: 'updates',
         component: ViewUpdatesComponent,
-        canActivate: [AuthenticationGuard],
+        canActivate: [NgxPermissionsGuard],
+        data: {
+            permissions: {
+                except: ['57'],
+                redirectTo: '/dashboard'
+            }
+        }
     }
 ];
 

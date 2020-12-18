@@ -11,10 +11,14 @@
   color: red;
 }
 
-.dissable{
-    color: lightblue;
+.disable {
+  color: lightblue;
 }
 
-.select-sm{
-    width: 70px;
+.select-sm {
+  width: 70px;
+}
+
+.logut-icon {
+  font-size: x-large;
 }

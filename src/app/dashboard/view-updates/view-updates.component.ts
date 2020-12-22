@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/service/auth.service';
 import { DashboardService } from '../service/dashboard.service';
 
 @Component({
@@ -20,12 +22,15 @@ export class ViewUpdatesComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private dashboardService: DashboardService,
+        private authService: AuthService,
+        private router: Router
     ) {
         this.viewUpdateForm = this.formBuilder.group({
             projectId: new FormControl(''),
             userId: new FormControl(''),
-            itemsPerPage: new FormControl(5),
-            currentPage: new FormControl(1)
+            itemsPerPage: new FormControl(2),
+            currentPage: new FormControl(1),
+            filterBy: new FormControl('ProjectWise')
         });
     }
 
@@ -57,6 +62,11 @@ export class ViewUpdatesComponent implements OnInit {
     bindProjectDropdown() {
         this.dashboardService.getProject().toPromise().then(res => {
             this.projectsList = res[`data`];
+        }).catch(err => {
+            if (err[`error`] && err[`error`][`status`] === 401) {
+                this.authService.logout();
+                this.router.navigate(['/']);
+            }
         });
     }
 
@@ -68,14 +78,24 @@ export class ViewUpdatesComponent implements OnInit {
                     this.f[`userId`].setValue('');
                     this.employeeList = users[`data`];
                 }
-            }).catch(err => { });
+            }).catch(err => {
+                if (err[`error`] && err[`error`][`status`] === 401) {
+                    this.authService.logout();
+                    this.router.navigate(['/']);
+                }
+            });
             this.getTaskDetail(selectedProject, 0);
         } else {
             this.getTaskDetail(0, 0);
         }
     }
 
-    onChangeEmployee() {
+    onChangeEmployee(filterValue) {
+        if (filterValue === 'UserWise') {
+            this.f[`filterBy`].setValue('UserWise');
+        } else {
+            this.f[`filterBy`].setValue('ProjectWise');
+        }
         const selectedProject = this.f[`projectId`][`value`];
         const selectedUser = this.f[`userId`][`value`];
         if (selectedProject === '') {
@@ -86,9 +106,21 @@ export class ViewUpdatesComponent implements OnInit {
     }
 
     getTaskDetail(projectId, userId) {
-        this.dashboardService.getTaskdetail(projectId, userId).toPromise().then(res => {
-            if (res && res[`data`][`taskList`]) {
-                this.dailyUpdateDetail = res[`data`][`taskList`];
+        const selectedFilter = this.f[`filterBy`][`value`];
+        this.dashboardService.getTaskdetail(projectId, userId, selectedFilter).toPromise().then(res => {
+            if (selectedFilter === 'UserWise') {
+                if (res && res[`data`][`userTaskList`]) {
+                    this.dailyUpdateDetail = res[`data`][`userTaskList`];
+                }
+            } else {
+                if (res && res[`data`][`projectList`]) {
+                    this.dailyUpdateDetail = res[`data`][`projectList`];
+                }
+            }
+        }).catch(err => {
+            if (err[`error`] && err[`error`][`status`] === 401) {
+                this.authService.logout();
+                this.router.navigate(['/']);
             }
         });
     }

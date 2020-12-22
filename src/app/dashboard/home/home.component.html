@@ -31,7 +31,7 @@
                 *ngFor="let blog of taskForm.controls.taskList.value; let i = index ;trackBy:trackByIndex">
                 <tr [formGroupName]="i">
                     <td>
-                        <select class="form-control" formControlName="projectId">
+                        <select class="form-control dropdown-width" formControlName="projectId">
                             <option value="null">Select Project</option>
                             <option *ngFor="let project of projectList" [value]="project.projectId">
                                 {{project.projectName}}
@@ -45,7 +45,7 @@
                         </div>
                     </td>
                     <td>
-                        <select class="form-control" formControlName="taskMasterId">
+                        <select class="form-control dropdown-width" formControlName="taskMasterId">
                             <option value="null">Select Task</option>
                             <option
                                 *ngFor="let j of getTaskByProjectId(taskForm.controls['taskList']?.value[i]?.projectId)"
@@ -62,7 +62,8 @@
                     </td>
 
                     <td>
-                        <textarea class="form-control" rows="3" placeholder="Description" formControlName="taskDesc">
+                        <textarea class="form-control description" rows="3" placeholder="Description"
+                            formControlName="taskDesc">
                                 </textarea>
                         <div *ngIf="submitted" class="error-message">
                             <small *ngIf="projectDetail.controls[i].get('taskDesc').errors?.required"
@@ -99,7 +100,7 @@
                         </div>
                     </td>
                     <td *ngIf="isControlsVisible">
-                        <select class="form-control" formControlName="status">
+                        <select class="form-control dropdown-width" formControlName="status">
                             <option value="null">Select Status</option>
                             <option *ngFor="let status of taskStatus" [ngValue]="status.statusId">
                                 {{status.statusTitle}}
@@ -134,5 +135,11 @@
         [disabled]="isBtnDissabled ? true : null">
         <span> Submit </span>
     </button>
+
+    <div class="error-message">
+        <p *ngIf="backendError">
+            {{backendError}}
+        </p>
+    </div>
 
 </form>

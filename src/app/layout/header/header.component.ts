@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/service/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-header',
@@ -26,5 +27,28 @@ export class HeaderComponent implements OnInit {
     logout() {
         this.authService.logout();
         this.isLogin = this.authService.checkUserLoggedIn();
+    }
+
+    syncWithEasyCollab() {
+        this.authService.syncEasyCollab().toPromise().then(res => {
+            if (res && (res[`errorMessage`] !== '')) {
+                window.location.reload();
+            } else {
+                Swal.fire({
+                    text: res[`errorMessage`],
+                    icon: 'error',
+                    confirmButtonText: 'Ok',
+                }).then();
+            }
+        }).catch(err => {
+            if (err) {
+                Swal.fire({
+                    text: 'Failed to fetch project from easycollab',
+                    icon: 'error',
+                    confirmButtonText: 'Ok',
+                }).then();
+            }
+        });
+
     }
 }

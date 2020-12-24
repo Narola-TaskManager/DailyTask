@@ -81,7 +81,6 @@ export class HomeComponent implements OnInit {
     // get all saved task on page load
     getTaskList() {
         this.dashboardService.getAllSaveTask().toPromise().then(res => {
-
             if (res && res[`data`] && res[`data`][`taskList`].length > 0) {
                 this.disableEod = false;
                 const taskList = res[`data`][`taskList`];
@@ -117,6 +116,15 @@ export class HomeComponent implements OnInit {
 
     get projectDetail(): FormArray {
         return this.taskForm.get('taskList') as FormArray;
+    }
+
+    deleteTask(index) {
+        this.projectDetail.removeAt(index);
+        const newData = [...this.projectDetail.value];
+        this.projectDetail.clear();
+        newData.forEach(element => {
+            this.projectDetail.push(this.addNewControlWithValue(element));
+        });
     }
 
     showHideControls(events) {

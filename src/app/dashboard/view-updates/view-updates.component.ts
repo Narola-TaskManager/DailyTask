@@ -19,6 +19,73 @@ export class ViewUpdatesComponent implements OnInit {
     paginationReqPayload = {};
     dailyUpdateDetail = [];
 
+    dataList1 = [
+        {
+            pname: "Giftzzle",
+            numbers: [
+                {
+                    userName: 'Riya',
+                    Task: 'Login',
+                    Description: 'qq',
+                    Esthr: '5',
+                    Acthr: '7',
+                    Status: 'Done',
+                    Tracker: 'true'
+                },
+                {
+                    userName: 'Uday',
+                    Task: 'User profile',
+                    Description: 'qq',
+                    Esthr: '4',
+                    Acthr: '2',
+                    Status: 'In-progress',
+                    Tracker: 'true'
+                },
+                {
+                    userName: 'ABC',
+                    Task: 'Dashboard',
+                    Description: 'qq',
+                    Esthr: '7',
+                    Acthr: '5',
+                    Status: 'Done',
+                    Tracker: 'true'
+                }
+            ]
+        },
+        {
+            pname: "Daily Task",
+            numbers: [
+                {
+                    userName: 'Prashant',
+                    Task: 'View update',
+                    Description: 'qq',
+                    Esthr: '5',
+                    Acthr: '2',
+                    Status: 'Done',
+                    Tracker: 'true'
+                },
+                {
+                    userName: 'Riya',
+                    Task: 'Auth guard',
+                    Description: 'qq',
+                    Esthr: '1',
+                    Acthr: '2',
+                    Status: 'In-Progress',
+                    Tracker: 'true'
+                },
+                {
+                    userName: 'Shweta',
+                    Task: 'Logout',
+                    Description: 'qq',
+                    Esthr: '1',
+                    Acthr: '4',
+                    Status: 'Done',
+                    Tracker: 'true'
+                }
+            ]
+        }
+    ];
+
     constructor(
         private formBuilder: FormBuilder,
         private dashboardService: DashboardService,
@@ -26,8 +93,8 @@ export class ViewUpdatesComponent implements OnInit {
         private router: Router
     ) {
         this.viewUpdateForm = this.formBuilder.group({
-            projectId: new FormControl(''),
-            userId: new FormControl(''),
+            projectId: new FormControl('0'),
+            userId: new FormControl('0'),
             itemsPerPage: new FormControl(2),
             currentPage: new FormControl(1),
             filterBy: new FormControl('ProjectWise')
@@ -108,6 +175,7 @@ export class ViewUpdatesComponent implements OnInit {
     getTaskDetail(projectId, userId) {
         const selectedFilter = this.f[`filterBy`][`value`];
         this.dashboardService.getTaskdetail(projectId, userId, selectedFilter).toPromise().then(res => {
+
             if (selectedFilter === 'UserWise') {
                 if (res && res[`data`][`userTaskList`]) {
                     this.dailyUpdateDetail = res[`data`][`userTaskList`];
@@ -117,6 +185,7 @@ export class ViewUpdatesComponent implements OnInit {
                     this.dailyUpdateDetail = res[`data`][`projectList`];
                 }
             }
+            console.log("res...", this.dailyUpdateDetail);
         }).catch(err => {
             if (err[`error`] && err[`error`][`status`] === 401) {
                 this.authService.logout();
@@ -126,3 +195,21 @@ export class ViewUpdatesComponent implements OnInit {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

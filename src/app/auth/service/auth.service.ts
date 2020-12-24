@@ -17,6 +17,7 @@ export class AuthService {
 
     constructor(
         private http: HttpClient,
+        private permissionsService: NgxPermissionsService,
     ) { }
 
     login(requestPayload) {
@@ -39,9 +40,13 @@ export class AuthService {
     }
 
     logout() {
-        // this.permissionsService.flushPermissions();
+        this.permissionsService.flushPermissions();
         localStorage.clear();
         this.changeAuthStatus('logout');
+    }
+
+    syncEasyCollab() {
+        return this.http.get('/projects/synch');
     }
 
 }

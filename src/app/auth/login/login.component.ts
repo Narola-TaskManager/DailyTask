@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     submitted = false;
     backendError;
+    disabledBtn = false;
 
     constructor(
         private router: Router,
@@ -24,14 +25,20 @@ export class LoginComponent implements OnInit {
 
     ngOnInit(): void {
         this.initFormGroup();
+        const isLoggedIn = this.authService.checkUserLoggedIn();
+        if (isLoggedIn) {
+            this.router.navigate(['/dashboard']);
+        } else {
+            this.router.navigate(['/']);
+        }
     }
 
     initFormGroup() {
         this.loginForm = this.formBuilder.group({
-            username: new FormControl('', Validators.compose([
+            username: new FormControl('', [
                 Validators.required,
-                Validators.email
-            ])),
+                Validators.pattern(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)
+            ]),
             password: new FormControl('', Validators.compose([Validators.required]))
         });
     }
@@ -44,6 +51,7 @@ export class LoginComponent implements OnInit {
         if (!isFormValid) {
             return;
         }
+        this.disabledBtn = true;
         this.authService.login(this.loginForm.value).toPromise().then(res => {
             if (res && res[`data`]) {
                 this.authService.setToken(res[`data`].token);
@@ -57,6 +65,7 @@ export class LoginComponent implements OnInit {
                 }
             }
         }).catch(err => {
+            this.disabledBtn = false;
             if (err && err.error && err.error.errorMessage) {
                 this.backendError = err.error.errorMessage;
             }

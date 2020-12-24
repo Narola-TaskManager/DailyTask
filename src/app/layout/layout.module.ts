@@ -4,10 +4,12 @@ import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
 import { ShareModule } from '../share/share.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
     declarations: [
-        HeaderComponent
+        HeaderComponent,
+        FooterComponent
     ],
     imports: [
         CommonModule,
@@ -16,7 +18,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         ShareModule
     ],
     exports: [
-        HeaderComponent
+        HeaderComponent,
+        FooterComponent
     ]
 })
 export class LayoutModule { }

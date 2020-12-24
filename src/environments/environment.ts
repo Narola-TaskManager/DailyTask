@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiRoot: 'https://taskmanager-narola.herokuapp.com/api'
-//   apiRoot: 'http://192.168.100.41:8080/api'
+//   apiRoot: 'https://taskmanager-narola.herokuapp.com/api'
+  apiRoot: 'http://192.168.100.41:8080/api'
 };
 
 /*

@@ -1,15 +1,27 @@
-<form [formGroup]="viewUpdateForm">
+<form [formGroup]="viewUpdateForm" class="mb-5">
+
+    <i class="fa fa-check-circle-o green-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
+    <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="Witout tracker" placement="bottom"></i>
+    <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
+    <i class="fa fa-clock-o red-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
+
+    <span class="badge badge-success">COMPLETED</span>
+    <span class="badge badge-secondary">REMAINING </span>
+    <span class="badge badge-info">INPROGRESS</span>
 
     <div class="row">
         <div class="col-sm-6">
+            Select Project :
             <select class="form-control" formControlName="projectId" (change)="onChangeProject()">
                 <option value="">Select Project</option>
+                <option value="0">All</option>
                 <option *ngFor="let project of projectsList" [value]="project.projectId">
                     {{project.projectName}}
                 </option>
             </select>
         </div>
         <div class="col-sm-6">
+            Select Employee
             <select class="form-control" formControlName="userId" (change)="onChangeEmployee(f['filterBy']['value'])">
                 <option value="">Select employee</option>
                 <option value="0">All</option>
@@ -20,14 +32,65 @@
         </div>
     </div>
 
+    <div class="row" *ngIf="!dailyUpdateDetail && dailyUpdateDetail.length === 0">
+        <div class="col-12">
+            <h3 class="text-center mt-5"> Not found </h3>
+        </div>
+    </div>
+    <!-- 
+    <table class="table">
+        <thead>
+            <th> Project</th>
+            <th>Employee </th>
+            <th>Task </th>
+            <th> Description</th>
+            <th>Estimated Hour </th>
+            <th> Actual Hour </th>
+            <th>Status </th>
+            <th>Tracker </th>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="10">
+                    999115 - Knowledge Upgrade
+                </td>
+                <td>Riya Yagneshbhai Shastri</td>
+                <td>Development </td>
+                <td> Implemented Ngx-permision to manage user role [ Done ] Implemented all APIs for view daily task
+                    page [Done] Test and deploy the updated code on heroku</td>
+                <td>3 </td>
+                <td> 0 </td>
+                <td>REMAINING </td>
+                <td>Without Tracker </td>
+            </tr>
+            <tr>
+                <td rowspan="3">Prashant Mukundbhai Patel</td>
+                <td>Task management </td>
+                <td> Bug while sending mail</td>
+                <td>3 </td>
+                <td> 0 </td>
+                <td>REMAINING </td>
+                <td>Without Tracker </td>
+            </tr>
+            <tr>
+                <td>Task management </td>
+                <td> Bug while sending mail</td>
+                <td>3 </td>
+                <td> 0 </td>
+                <td>REMAINING </td>
+                <td>Without Tracker </td>
+            </tr>
+        </tbody>
+    </table> -->
+
     <div class="row mt-3 ml-1" *ngIf="dailyUpdateDetail.length > 0">
+
         <label> Show entries</label>
         <select class="form-control select-sm ml-3" formControlName="itemsPerPage" (change)="changePagesize()">
             <option [ngValue]="5"> 5 </option>
             <option [ngValue]="3"> 3 </option>
             <option [ngValue]="2"> 2 </option>
         </select>
-
 
         <div ngbDropdown class="d-inline-block float-right ml-5">
             <div class=" float-right">
@@ -38,94 +101,89 @@
                 </div>
             </div>
         </div>
+
     </div>
 
-    <div class="row mt-3" *ngIf="dailyUpdateDetail.length > 0">
-        <div class="col-12">
-            <div class="div-table">
-                <div class="div-table-row">
+    <table class="table mt-2">
+        <thead>
+            <th> Project</th>
+            <th>Employee </th>
+            <th>Task </th>
+            <th> Description</th>
+            <th>Estimated Hour </th>
+            <th> Actual Hour </th>
+            <th>Status </th>
+            <th>Tracker </th>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let project of dailyUpdateDetail">
+                <tr>
+                    <td [attr.rowspan]="10">
+                        {{project.projectName}}
+                    </td>
+                    <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
+                        <td [attr.rowspan]="user.taskList.length">{{user.userName}}</td>
+                        <ng-container *ngFor="let task of user.taskList ; let i= index;">
+                            <ng-container *ngIf="i === 0">
+                                <td> {{task.taskMasterTitle}} </td>
+                                <td> {{task.taskDesc}} </td>
+                                <td> {{task.estHr}}</td>
+                                <td> {{task.actualHr}}</td>
+                                <td *ngIf="task.statusTitle === 'REMAINING'">
+                                    <span class="badge badge-secondary">REMAINING </span>
+                                </td>
+                                <td *ngIf="task.statusTitle === 'INPROGRESS'">
+                                    <span class="badge badge-info">INPROGRESS</span>
+                                </td>
+                                <td *ngIf="task.statusTitle === 'COMPLETED'">
+                                    <span class="badge badge-success">COMPLETED</span>
+                                </td>
+                                <td *ngIf="task.isTrackerUsed">
+                                    <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
+                                        placement="bottom"></i>
+                                </td>
+                                <td *ngIf="!task.isTrackerUsed">
+                                    <i class="fa fa-clock-o red-icon" aria-hidden="true" ngbTooltip="With tracker"
+                                        placement="bottom"></i>
+                                </td>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+                <tr>
+                    <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
+                        <ng-container *ngFor="let task of user.taskList ; let i= index;">
+                            <ng-container *ngIf="i !== 0">
+                                <td> {{task.taskMasterTitle}} </td>
+                                <td> {{task.taskDesc}} </td>
+                                <td> {{task.estHr}}</td>
+                                <td> {{task.actualHr}}</td>
+                                <td *ngIf="task.statusTitle === 'REMAINING'">
+                                    <span class="badge badge-secondary">REMAINING </span>
+                                </td>
+                                <td *ngIf="task.statusTitle === 'INPROGRESS'">
+                                    <span class="badge badge-info">INPROGRESS</span>
+                                </td>
+                                <td *ngIf="task.statusTitle === 'COMPLETED'">
+                                    <span class="badge badge-success">COMPLETED</span>
+                                </td>
+                                <td *ngIf="task.isTrackerUsed">
+                                    <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
+                                        placement="bottom"></i>
+                                </td>
+                                <td *ngIf="!task.isTrackerUsed">
+                                    <i class="fa fa-clock-o red-icon" aria-hidden="true" ngbTooltip="Without tracker"
+                                        placement="bottom"></i>
+                                </td>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
 
-                    <div class="div-table-col-lg" *ngIf="f['filterBy']['value'] === 'ProjectWise'">
-                        <strong> Project</strong>
-                    </div>
-                    <div class="div-table-col-lg" *ngIf="f['filterBy']['value'] === 'ProjectWise'">
-                        <strong>Employee </strong>
-                    </div>
-
-                    <div class="div-table-col-lg" *ngIf="f['filterBy']['value'] === 'UserWise'">
-                        <strong>Employee </strong>
-                    </div>
-                    <div class="div-table-col-lg" *ngIf="f['filterBy']['value'] === 'UserWise'">
-                        <strong> Project</strong>
-                    </div>
-
-                    <div class="div-table-col-xlg"> <strong>Task </strong></div>
-                    <div class="div-table-col-xlg"><strong> Description</strong> </div>
-                    <div class="div-table-col-sm"> <strong>Estimated Hour </strong></div>
-                    <div class="div-table-col-sm"><strong> Actual Hour </strong></div>
-                    <div class="div-table-col-lg"><strong>Status </strong> </div>
-                    <div class="div-table-col-lg"> <strong>Tracker </strong></div>
-                </div>
-                <hr>
-                <div class="div-table-row" *ngIf="f['filterBy']['value'] === 'ProjectWise'">
-                    <div class="div-table-row"
-                        *ngFor="let list of dailyUpdateDetail | slice: pageSize | slice: 0:f['itemsPerPage']['value']">
-                        <div class="div-table-col-lg"> {{list.projectName}}</div>
-                        <div class="div-table-row" *ngFor="let task of list.userTaskList ; let j= index;">
-                            <div class="div-table-col-lg"> {{task.userName}}</div>
-                            <div class="div-table-row mb-2" *ngFor="let detail of task.taskList; let i= index;">
-                                <hr *ngIf="i !== 0">
-                                <div class="div-table-col-xlg">{{detail.taskMasterTitle}} </div>
-                                <div class="div-table-col-xlg">{{detail.taskDesc}} </div>
-                                <div class="div-table-col-sm">{{detail.estHr}} </div>
-                                <div class="div-table-col-sm">{{detail.actualHr}} </div>
-                                <div class="div-table-col-lg">{{detail.statusTitle}} </div>
-                                <div class="div-table-col-lg" *ngIf="detail.isTrackerUsed">
-                                    Used Tracker
-                                </div>
-                                <div class="div-table-col-lg" *ngIf="!detail.isTrackerUsed">
-                                    Without Tracker
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                </div>
-
-                <div class="div-table-row mb-3" *ngIf="f['filterBy']['value'] === 'UserWise'">
-                    <div
-                        *ngFor="let list of dailyUpdateDetail | slice: pageSize | slice: 0:f['itemsPerPage']['value'] ">
-                        <div class="div-table-col-lg"> {{list.userName}}</div>
-                        <div class="div-table-row mb-2">
-                            <div *ngFor="let project of list.projectList ; let j= index;">
-                                <div class="div-table-row">
-                                    <div class="div-table-col-lg"> {{project.projectName}}</div>
-                                    <div class="div-table-row" *ngFor="let detail of project.taskList; let i= index;">
-                                        <hr *ngIf="i !== 0 && project.taskList.length >= 1">
-                                        <div class="div-table-col-xlg">{{detail.taskMasterTitle}} </div>
-                                        <div class="div-table-col-xlg">{{detail.taskDesc}} </div>
-                                        <div class="div-table-col-sm">{{detail.estHr}} </div>
-                                        <div class="div-table-col-sm">{{detail.actualHr}} </div>
-                                        <div class="div-table-col-lg">{{detail.statusTitle}} </div>
-                                        <div class="div-table-col-lg" *ngIf="detail.isTrackerUsed">
-                                            Used Tracker
-                                        </div>
-                                        <div class="div-table-col-lg" *ngIf="!detail.isTrackerUsed">
-                                            Without Tracker
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr *ngIf="list.projectList.length > 1 && j !== (list.projectList.length-1)">
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4 float-right" *ngIf="dailyUpdateDetail.length > 0">
+    <div class="row mt-4 mb-4 float-right" *ngIf="dailyUpdateDetail.length > 0">
         <div class="col-12">
             <ngb-pagination [collectionSize]="dailyUpdateDetail.length" #numPages
                 [pageSize]="f['itemsPerPage']['value']" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">

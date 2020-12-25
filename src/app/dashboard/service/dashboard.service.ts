@@ -35,6 +35,6 @@ export class DashboardService {
     }
 
     getTaskdetail(projectId, userId, filterBy) {
-        return this.http.get('/tasks/report?projectId=' + projectId + '&userId=' + userId + '&outputBy=' + filterBy);
+        return this.http.get('/tasks/report?projectId=' + projectId + '&userId=' + userId + '&groupBy=' + filterBy);
     }
 }

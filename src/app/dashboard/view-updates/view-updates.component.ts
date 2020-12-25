@@ -18,73 +18,14 @@ export class ViewUpdatesComponent implements OnInit {
     viewUpdateForm: FormGroup;
     paginationReqPayload = {};
     dailyUpdateDetail = [];
+    apiCalled = false;
 
-    dataList1 = [
-        {
-            pname: "Giftzzle",
-            numbers: [
-                {
-                    userName: 'Riya',
-                    Task: 'Login',
-                    Description: 'qq',
-                    Esthr: '5',
-                    Acthr: '7',
-                    Status: 'Done',
-                    Tracker: 'true'
-                },
-                {
-                    userName: 'Uday',
-                    Task: 'User profile',
-                    Description: 'qq',
-                    Esthr: '4',
-                    Acthr: '2',
-                    Status: 'In-progress',
-                    Tracker: 'true'
-                },
-                {
-                    userName: 'ABC',
-                    Task: 'Dashboard',
-                    Description: 'qq',
-                    Esthr: '7',
-                    Acthr: '5',
-                    Status: 'Done',
-                    Tracker: 'true'
-                }
-            ]
-        },
-        {
-            pname: "Daily Task",
-            numbers: [
-                {
-                    userName: 'Prashant',
-                    Task: 'View update',
-                    Description: 'qq',
-                    Esthr: '5',
-                    Acthr: '2',
-                    Status: 'Done',
-                    Tracker: 'true'
-                },
-                {
-                    userName: 'Riya',
-                    Task: 'Auth guard',
-                    Description: 'qq',
-                    Esthr: '1',
-                    Acthr: '2',
-                    Status: 'In-Progress',
-                    Tracker: 'true'
-                },
-                {
-                    userName: 'Shweta',
-                    Task: 'Logout',
-                    Description: 'qq',
-                    Esthr: '1',
-                    Acthr: '4',
-                    Status: 'Done',
-                    Tracker: 'true'
-                }
-            ]
-        }
+    groupByOptions = [
+        'Project',
+        'User'
     ];
+
+    pageSizeOptions = [2, 5, 10, 15, 20, 25, 50, 100];
 
     constructor(
         private formBuilder: FormBuilder,
@@ -97,16 +38,46 @@ export class ViewUpdatesComponent implements OnInit {
             userId: new FormControl('0'),
             itemsPerPage: new FormControl(2),
             currentPage: new FormControl(1),
-            filterBy: new FormControl('ProjectWise')
+            groupBy: new FormControl('Project')
         });
     }
 
     ngOnInit(): void {
-        this.bindProjectDropdown();
-        this.getTaskDetail(0, 0);
+        this.fillProjectDropdown();
+        this.getTaskDetail();
     }
 
     get f() { return this.viewUpdateForm.controls; }
+
+    fillProjectDropdown() {
+        this.dashboardService.getProject().toPromise().then(res => {
+            this.projectsList = res[`data`];
+        }).catch(err => {
+            this.projectsList = [];
+            if (err[`error`] && err[`error`][`status`] === 401) {
+                this.authService.logout();
+                this.router.navigate(['/']);
+            }
+        });
+    }
+
+    getTaskDetail() {
+        const selectedFilter = this.f.groupBy.value;
+        const projectId = this.f.projectId.value;
+        const userId = this.f.userId.value;
+        this.apiCalled = false;
+        this.dashboardService.getTaskdetail(projectId, userId, selectedFilter).toPromise().then(res => {
+            if (res && res[`data`][`groupedList`]) {
+                this.apiCalled = true;
+                this.dailyUpdateDetail = res[`data`][`groupedList`];
+            }
+        }).catch(err => {
+            if (err[`error`] && err[`error`][`status`] === 401) {
+                this.authService.logout();
+                this.router.navigate(['/']);
+            }
+        });
+    }
 
     onPageChange(pageNum: number): void {
         if (pageNum) {
@@ -126,17 +97,6 @@ export class ViewUpdatesComponent implements OnInit {
         this.f[`itemsPerPage`].setValue(itemsPerPage);
     }
 
-    bindProjectDropdown() {
-        this.dashboardService.getProject().toPromise().then(res => {
-            this.projectsList = res[`data`];
-        }).catch(err => {
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
-            }
-        });
-    }
-
     onChangeProject() {
         const selectedProject = this.f[`projectId`][`value`];
         if (selectedProject) {
@@ -145,70 +105,15 @@ export class ViewUpdatesComponent implements OnInit {
                     this.f[`userId`].setValue('');
                     this.employeeList = users[`data`];
                 }
+                this.getTaskDetail();
             }).catch(err => {
                 if (err[`error`] && err[`error`][`status`] === 401) {
                     this.authService.logout();
                     this.router.navigate(['/']);
                 }
             });
-            this.getTaskDetail(selectedProject, 0);
         } else {
-            this.getTaskDetail(0, 0);
+            this.getTaskDetail();
         }
     }
-
-    onChangeEmployee(filterValue) {
-        if (filterValue === 'UserWise') {
-            this.f[`filterBy`].setValue('UserWise');
-        } else {
-            this.f[`filterBy`].setValue('ProjectWise');
-        }
-        const selectedProject = this.f[`projectId`][`value`];
-        const selectedUser = this.f[`userId`][`value`];
-        if (selectedProject === '') {
-            this.getTaskDetail(0, selectedUser);
-        } else {
-            this.getTaskDetail(selectedProject, selectedUser);
-        }
-    }
-
-    getTaskDetail(projectId, userId) {
-        const selectedFilter = this.f[`filterBy`][`value`];
-        this.dashboardService.getTaskdetail(projectId, userId, selectedFilter).toPromise().then(res => {
-
-            if (selectedFilter === 'UserWise') {
-                if (res && res[`data`][`userTaskList`]) {
-                    this.dailyUpdateDetail = res[`data`][`userTaskList`];
-                }
-            } else {
-                if (res && res[`data`][`projectList`]) {
-                    this.dailyUpdateDetail = res[`data`][`projectList`];
-                }
-            }
-        }).catch(err => {
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
-            }
-        });
-    }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

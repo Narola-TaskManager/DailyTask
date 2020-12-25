@@ -34,9 +34,19 @@ export class HomeComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.initFormGroup();
         this.getProjectList();
         this.getTaskList();
+        this.initFormGroup();
+    }
+
+    changeControlValue() {
+        if (this.isBtnDissabled && !this.isNewtaskDissabled) {
+            // this.taskForm.valueChanges.subscribe(change => {
+            // if (change) {
+            this.isBtnDissabled = false;
+            // }
+            // });
+        }
     }
 
     initFormGroup() {
@@ -121,10 +131,19 @@ export class HomeComponent implements OnInit {
     deleteTask(index) {
         this.projectDetail.removeAt(index);
         const newData = [...this.projectDetail.value];
-        this.projectDetail.clear();
-        newData.forEach(element => {
-            this.projectDetail.push(this.addNewControlWithValue(element));
-        });
+        setTimeout(() => {
+            this.projectDetail.clear();
+        }, 100);
+
+        setTimeout(() => {
+            if (newData.length === 0) {
+                this.projectDetail.push(this.addNewControlWithValue());
+            } else {
+                newData.forEach((element, j) => {
+                    this.projectDetail.push(this.addNewControlWithValue(element));
+                });
+            }
+        }, 100);
     }
 
     showHideControls(events) {

@@ -125,7 +125,7 @@
                                     formControlName="isTrackerUsed">
                             </div>
                         </td>
-                        <td cell-8 *ngIf="!blog['taskId'] && i !== 0">
+                        <td cell-8 *ngIf="!blog['taskId']">
                             <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="Delete"
                                 placement="bottom" (click)="deleteTask(i)">
                             </i>

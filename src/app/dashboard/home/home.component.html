@@ -35,7 +35,8 @@
                     *ngFor="let blog of projectDetail.value; let i = index ;trackBy:trackByIndex">
                     <tr [formGroupName]="i">
                         <td cell-1>
-                            <select class="form-control dropdown-width w-100" formControlName="projectId">
+                            <select class="form-control dropdown-width w-100" formControlName="projectId"
+                                (change)="changeControlValue()">
                                 <option value="null">Select Project</option>
                                 <option *ngFor="let project of projectList" [value]="project.projectId">
                                     {{project.projectName}}
@@ -49,7 +50,8 @@
                             </div>
                         </td>
                         <td cell-2>
-                            <select class="form-control dropdown-width w-100" formControlName="taskMasterId">
+                            <select class="form-control dropdown-width w-100" formControlName="taskMasterId"
+                                (change)="changeControlValue()">
                                 <option value="null">Select Task</option>
                                 <option
                                     *ngFor="let j of getTaskByProjectId(taskForm.controls['taskList']?.value[i]?.projectId)"
@@ -65,8 +67,8 @@
                             </div>
                         </td>
                         <td cell-3>
-                            <textarea class="form-control" rows="3" placeholder="Description"
-                                formControlName="taskDesc">
+                            <textarea class="form-control" rows="3" placeholder="Description" formControlName="taskDesc"
+                                (change)="changeControlValue()">
                                 </textarea>
                             <div *ngIf="submitted" class="error-message">
                                 <small *ngIf="projectDetail.controls[i].get('taskDesc').errors?.required"
@@ -76,7 +78,8 @@
                             </div>
                         </td>
                         <td cell-4>
-                            <input type="text" class="form-control" placeholder="0" formControlName="estHr">
+                            <input type="text" class="form-control" placeholder="0" formControlName="estHr"
+                                (change)="changeControlValue()">
                             <small *ngIf="projectDetail.controls[i].get('estHr').errors?.pattern" class="error-message">
                                 Enter valid hour
                             </small>
@@ -89,7 +92,8 @@
                         </td>
                         <td cell-5 *ngIf="isControlsVisible">
                             <div *ngIf="isControlsVisible">
-                                <input type="text" class="form-control" placeholder="0" formControlName="actualHr">
+                                <input type="text" class="form-control" placeholder="0" formControlName="actualHr"
+                                    (change)="changeControlValue()">
                                 <small *ngIf="projectDetail.controls[i].get('actualHr').errors?.pattern"
                                     class="error-message">
                                     Enter valid hour
@@ -103,7 +107,8 @@
                             </div>
                         </td>
                         <td cell-6 *ngIf="isControlsVisible">
-                            <select class="form-control dropdown-width w-100" formControlName="status">
+                            <select class="form-control dropdown-width w-100" formControlName="status"
+                                (change)="changeControlValue()">
                                 <option value="null">Select Status</option>
                                 <option *ngFor="let status of taskStatus" [ngValue]="status.statusId">
                                     {{status.statusTitle}}
@@ -117,12 +122,9 @@
                             </div>
                         </td>
                         <td cell-7 *ngIf="isControlsVisible">
-                            <!-- <input type="checkbox" class="form-check-input ml-3" id="exampleCheck1"
-                                formControlName="isTrackerUsed"> -->
-
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1"
-                                    formControlName="isTrackerUsed">
+                                    formControlName="isTrackerUsed" (change)="changeControlValue()">
                             </div>
                         </td>
                         <td cell-8 *ngIf="!blog['taskId']">
@@ -142,7 +144,6 @@
                 Submit
             </span>
         </button>
-
         <button type="submit" class="btn btn-primary mt-4"
             *ngIf="taskForm.controls['taskList']['value'].length > 0 && !isControlsVisible"
             [disabled]="isBtnDissabled ? true : null">

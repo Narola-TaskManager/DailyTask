@@ -34,9 +34,19 @@ export class HomeComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.initFormGroup();
         this.getProjectList();
         this.getTaskList();
+        this.initFormGroup();
+    }
+
+    changeControlValue() {
+        if (this.isBtnDissabled && !this.isNewtaskDissabled) {
+            // this.taskForm.valueChanges.subscribe(change => {
+            // if (change) {
+            this.isBtnDissabled = false;
+            // }
+            // });
+        }
     }
 
     initFormGroup() {

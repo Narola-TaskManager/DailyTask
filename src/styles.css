@@ -1,10 +1,66 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
+@import "https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap";
+
+:root {
+  --blue: #0784c7;
+  --black: #333333;
+  --black2: #202020;
+  --light-gray: #f5f5f5;
+  --gray: #777;
+}
+
+body {
+  font-family: poppins;
+}
+
+.bg-light {
+  background-color: #f5f5f5 !important;
+}
+
+.body-container {
+  min-height: calc(100vh - 100px);
+}
+
+footer {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+}
+
+app-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 100px);
+}
 
 .login-wrapper {
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.login-wrapper h4 {
+  font-size: 30px;
+  color: var(--blue);
+  font-family: poppins;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-wrapper .sub-title {
+  font-size: 16px;
+  color: var(--black2);
+  font-family: poppins;
+  font-weight: 500;
+  text-align: center;
+}
+
+.table-title-td {
+  text-align: center;
+  background: #f2f2f2;
+  font-weight: 500;
 }
 
 .error-message {
@@ -68,10 +124,6 @@
   width: 85px;
 }
 
-.sub-title {
-  font-size: medium;
-}
-
 .red-icon {
   color: red;
   font-size: larger;
@@ -82,14 +134,8 @@
   font-size: larger;
 }
 
-
-
-
-
-
 .footer-heart {
   text-align: center;
-  font-family: open sans, sans-serif;
 }
 
 .footer-heart a {
@@ -114,6 +160,23 @@
   vertical-align: middle;
 }
 
-.bg-light {
-  background-color: #ccc !important;
+
+.cell-1 {
+  width: 250px;
+}
+
+.cell-2 {
+  width: 200px;
+}
+
+.cell-3 {
+  width: 250px;
+}
+
+.cell-4 {
+  width: 75px;
+}
+
+.cell-5 {
+  width: 75px;
 }

@@ -3,9 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-//   apiRoot: 'https://taskmanager-narola.herokuapp.com/api'
-  apiRoot: 'http://192.168.100.41:8080/api'
+    production: false,
+    //   apiRoot: 'https://taskmanager-narola.herokuapp.com/api'
+    apiRoot: 'http://192.168.100.41:8083/api'
+    // apiRoot: 'http://clientapp.narola.online:2219/api'
 };
 
 /*

@@ -185,7 +185,6 @@ export class ViewUpdatesComponent implements OnInit {
                     this.dailyUpdateDetail = res[`data`][`projectList`];
                 }
             }
-            console.log("res...", this.dailyUpdateDetail);
         }).catch(err => {
             if (err[`error`] && err[`error`][`status`] === 401) {
                 this.authService.logout();

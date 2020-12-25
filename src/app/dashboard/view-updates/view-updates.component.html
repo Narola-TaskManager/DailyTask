@@ -1,194 +1,188 @@
-<form [formGroup]="viewUpdateForm" class="mb-5">
+<div class="py-3">
+    <form [formGroup]="viewUpdateForm" class="mb-5">
 
-    <i class="fa fa-check-circle-o green-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
+        <!-- <i class="fa fa-check-circle-o green-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
     <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="Witout tracker" placement="bottom"></i>
     <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
     <i class="fa fa-clock-o red-icon" aria-hidden="true" ngbTooltip="With tracker" placement="bottom"></i>
 
     <span class="badge badge-success">COMPLETED</span>
     <span class="badge badge-secondary">REMAINING </span>
-    <span class="badge badge-info">INPROGRESS</span>
+    <span class="badge badge-info">INPROGRESS</span> -->
 
-    <div class="row">
-        <div class="col-sm-6">
-            Select Project :
-            <select class="form-control" formControlName="projectId" (change)="onChangeProject()">
-                <option value="">Select Project</option>
-                <option value="0">All</option>
-                <option *ngFor="let project of projectsList" [value]="project.projectId">
-                    {{project.projectName}}
-                </option>
-            </select>
-        </div>
-        <div class="col-sm-6">
-            Select Employee
-            <select class="form-control" formControlName="userId" (change)="onChangeEmployee(f['filterBy']['value'])">
-                <option value="">Select employee</option>
-                <option value="0">All</option>
-                <option *ngFor="let employee of employeeList" [value]="employee.userId">
-                    {{employee.userName}}
-                </option>
-            </select>
-        </div>
-    </div>
-
-    <div class="row" *ngIf="!dailyUpdateDetail && dailyUpdateDetail.length === 0">
-        <div class="col-12">
-            <h3 class="text-center mt-5"> Not found </h3>
-        </div>
-    </div>
-    <!-- 
-    <table class="table">
-        <thead>
-            <th> Project</th>
-            <th>Employee </th>
-            <th>Task </th>
-            <th> Description</th>
-            <th>Estimated Hour </th>
-            <th> Actual Hour </th>
-            <th>Status </th>
-            <th>Tracker </th>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="10">
-                    999115 - Knowledge Upgrade
-                </td>
-                <td>Riya Yagneshbhai Shastri</td>
-                <td>Development </td>
-                <td> Implemented Ngx-permision to manage user role [ Done ] Implemented all APIs for view daily task
-                    page [Done] Test and deploy the updated code on heroku</td>
-                <td>3 </td>
-                <td> 0 </td>
-                <td>REMAINING </td>
-                <td>Without Tracker </td>
-            </tr>
-            <tr>
-                <td rowspan="3">Prashant Mukundbhai Patel</td>
-                <td>Task management </td>
-                <td> Bug while sending mail</td>
-                <td>3 </td>
-                <td> 0 </td>
-                <td>REMAINING </td>
-                <td>Without Tracker </td>
-            </tr>
-            <tr>
-                <td>Task management </td>
-                <td> Bug while sending mail</td>
-                <td>3 </td>
-                <td> 0 </td>
-                <td>REMAINING </td>
-                <td>Without Tracker </td>
-            </tr>
-        </tbody>
-    </table> -->
-
-    <div class="row mt-3 ml-1" *ngIf="dailyUpdateDetail.length > 0">
-
-        <label> Show entries</label>
-        <select class="form-control select-sm ml-3" formControlName="itemsPerPage" (change)="changePagesize()">
-            <option [ngValue]="5"> 5 </option>
-            <option [ngValue]="3"> 3 </option>
-            <option [ngValue]="2"> 2 </option>
-        </select>
-
-        <div ngbDropdown class="d-inline-block float-right ml-5">
-            <div class=" float-right">
-                <i class="fa fa-filter" aria-hidden="true" ngbDropdownToggle id="dropdownBasic1"></i>
-                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                    <button ngbDropdownItem (click)="onChangeEmployee('ProjectWise')">Project</button>
-                    <button ngbDropdownItem (click)="onChangeEmployee('UserWise')">Employee</button>
-                </div>
+        <div class="row">
+            <div class="col-sm-6">
+                Select Project :
+                <select class="form-control" formControlName="projectId" (change)="onChangeProject()">
+                    <option value="">Select Project</option>
+                    <option value="0">All</option>
+                    <option *ngFor="let project of projectsList" [value]="project.projectId">
+                        {{project.projectName}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                Select Employee
+                <select class="form-control" formControlName="userId"
+                    (change)="onChangeEmployee(f['filterBy']['value'])">
+                    <option value="">Select employee</option>
+                    <option value="0">All</option>
+                    <option *ngFor="let employee of employeeList" [value]="employee.userId">
+                        {{employee.userName}}
+                    </option>
+                </select>
             </div>
         </div>
 
-    </div>
-
-    <table class="table mt-2">
-        <thead>
-            <th> Project</th>
-            <th>Employee </th>
-            <th>Task </th>
-            <th> Description</th>
-            <th>Estimated Hour </th>
-            <th> Actual Hour </th>
-            <th>Status </th>
-            <th>Tracker </th>
-        </thead>
-        <tbody>
-            <ng-container *ngFor="let project of dailyUpdateDetail">
-                <tr>
-                    <td [attr.rowspan]="10">
-                        {{project.projectName}}
-                    </td>
-                    <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
-                        <td [attr.rowspan]="user.taskList.length">{{user.userName}}</td>
-                        <ng-container *ngFor="let task of user.taskList ; let i= index;">
-                            <ng-container *ngIf="i === 0">
-                                <td> {{task.taskMasterTitle}} </td>
-                                <td> {{task.taskDesc}} </td>
-                                <td> {{task.estHr}}</td>
-                                <td> {{task.actualHr}}</td>
-                                <td *ngIf="task.statusTitle === 'REMAINING'">
-                                    <span class="badge badge-secondary">REMAINING </span>
-                                </td>
-                                <td *ngIf="task.statusTitle === 'INPROGRESS'">
-                                    <span class="badge badge-info">INPROGRESS</span>
-                                </td>
-                                <td *ngIf="task.statusTitle === 'COMPLETED'">
-                                    <span class="badge badge-success">COMPLETED</span>
-                                </td>
-                                <td *ngIf="task.isTrackerUsed">
-                                    <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
-                                        placement="bottom"></i>
-                                </td>
-                                <td *ngIf="!task.isTrackerUsed">
-                                    <i class="fa fa-clock-o red-icon" aria-hidden="true" ngbTooltip="With tracker"
-                                        placement="bottom"></i>
-                                </td>
-                            </ng-container>
-                        </ng-container>
-                    </ng-container>
-                </tr>
-                <tr>
-                    <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
-                        <ng-container *ngFor="let task of user.taskList ; let i= index;">
-                            <ng-container *ngIf="i !== 0">
-                                <td> {{task.taskMasterTitle}} </td>
-                                <td> {{task.taskDesc}} </td>
-                                <td> {{task.estHr}}</td>
-                                <td> {{task.actualHr}}</td>
-                                <td *ngIf="task.statusTitle === 'REMAINING'">
-                                    <span class="badge badge-secondary">REMAINING </span>
-                                </td>
-                                <td *ngIf="task.statusTitle === 'INPROGRESS'">
-                                    <span class="badge badge-info">INPROGRESS</span>
-                                </td>
-                                <td *ngIf="task.statusTitle === 'COMPLETED'">
-                                    <span class="badge badge-success">COMPLETED</span>
-                                </td>
-                                <td *ngIf="task.isTrackerUsed">
-                                    <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
-                                        placement="bottom"></i>
-                                </td>
-                                <td *ngIf="!task.isTrackerUsed">
-                                    <i class="fa fa-clock-o red-icon" aria-hidden="true" ngbTooltip="Without tracker"
-                                        placement="bottom"></i>
-                                </td>
-                            </ng-container>
-                        </ng-container>
-                    </ng-container>
-                </tr>
-            </ng-container>
-        </tbody>
-    </table>
-
-    <div class="row mt-4 mb-4 float-right" *ngIf="dailyUpdateDetail.length > 0">
-        <div class="col-12">
-            <ngb-pagination [collectionSize]="dailyUpdateDetail.length" #numPages
-                [pageSize]="f['itemsPerPage']['value']" [(page)]="currentPage" (pageChange)="onPageChange(currentPage)">
-            </ngb-pagination>
+        <div class="row" *ngIf="!dailyUpdateDetail && dailyUpdateDetail.length === 0">
+            <div class="col-12">
+                <h3 class="text-center mt-5"> Not found </h3>
+            </div>
         </div>
-    </div>
 
-</form>
+        <div class="row mt-3 ml-1" *ngIf="dailyUpdateDetail.length > 0">
+
+            <label> Show entries</label>
+            <select class="form-control select-sm ml-3" formControlName="itemsPerPage" (change)="changePagesize()">
+                <option [ngValue]="5"> 5 </option>
+                <option [ngValue]="3"> 3 </option>
+                <option [ngValue]="2"> 2 </option>
+            </select>
+
+            <div ngbDropdown class="d-inline-block float-right ml-5">
+                <div class=" float-right">
+                    <i class="fa fa-filter" aria-hidden="true" ngbDropdownToggle id="dropdownBasic1"></i>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                        <button ngbDropdownItem (click)="onChangeEmployee('ProjectWise')">Project</button>
+                        <button ngbDropdownItem (click)="onChangeEmployee('UserWise')">Employee</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <table class="table mt-2">
+            <thead>
+                <th>Employee</th>
+                <th>Task</th>
+                <th>Description</th>
+                <th>Estimated Hour</th>
+                <th>Actual Hour</th>
+                <th>Status</th>
+                <th>
+                    <i class="fa fa-clock-o" aria-hidden="true" ngbTooltip="Tracker" placement="bottom"></i>
+                </th>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let project of dailyUpdateDetail">
+                    <tr>
+                        <!-- <td [attr.rowspan]="project.totalTask"> -->
+                        <td colspan="7" class="table-title-td">
+                            {{project.projectName}}
+                        </td>
+                    </tr>
+                    <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
+                        <tr *ngFor="let task of user.taskList ; let i= index;">
+                            <td [attr.rowspan]="user.taskList.length" *ngIf="i === 0">{{user.userName}}</td>
+                            <td> {{task.taskMasterTitle}} </td>
+                            <td> {{task.taskDesc}} </td>
+                            <td> {{task.estHr}}</td>
+                            <td>
+                                <span *ngIf="task.isEodUpdate">
+                                    {{task.actualHr}}
+                                </span>
+                            </td>
+                            <td>
+                                <span *ngIf="task.statusTitle === 'REMAINING' && task.isEodUpdate"
+                                    class="badge badge-secondary">REMAINING</span>
+                                <span *ngIf="task.statusTitle === 'INPROGRESS' && task.isEodUpdate"
+                                    class="badge badge-primary">INPROGRESS</span>
+                                <span *ngIf="task.statusTitle === 'COMPLETED' && task.isEodUpdate"
+                                    class="badge badge-success">COMPLETED</span>
+                            </td>
+                            <td>
+                                <i class="fa fa-check-circle-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
+                                    *ngIf="task.isTrackerUsed  && task.isEodUpdate" placement="bottom"></i>
+                                <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="With tracker"
+                                    *ngIf="!task.isTrackerUsed  && task.isEodUpdate" placement="bottom"></i>
+                            </td>
+                        </tr>
+                    </ng-container>
+
+                    <!-- <tr>
+                        <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
+                            <td [attr.rowspan]="user.taskList.length">{{user.userName}}</td>
+                            <ng-container *ngFor="let task of user.taskList ; let i= index;">
+                                <ng-container *ngIf="i === 0">
+                                    <td> {{task.taskMasterTitle}} </td>
+                                    <td> {{task.taskDesc}} </td>
+                                    <td> {{task.estHr}}</td>
+                                    <td>
+                                        <span *ngIf="task.isEodUpdate">
+                                            {{task.actualHr}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="task.statusTitle === 'REMAINING' && task.isEodUpdate"
+                                            class="badge badge-secondary">REMAINING</span>
+                                        <span *ngIf="task.statusTitle === 'INPROGRESS' && task.isEodUpdate"
+                                            class="badge badge-primary">INPROGRESS</span>
+                                        <span *ngIf="task.statusTitle === 'COMPLETED' && task.isEodUpdate"
+                                            class="badge badge-success">COMPLETED</span>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-check-circle-o green-icon" aria-hidden="true"
+                                            ngbTooltip="With tracker" *ngIf="task.isTrackerUsed  && task.isEodUpdate"
+                                            placement="bottom"></i>
+                                        <i class="fa fa-times-circle-o red-icon" aria-hidden="true"
+                                            ngbTooltip="With tracker" *ngIf="!task.isTrackerUsed  && task.isEodUpdate"
+                                            placement="bottom"></i>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </tr>
+                    <tr>
+                        <ng-container *ngFor="let user of project.userTaskList ; let j= index;">
+                            <ng-container *ngFor="let task of user.taskList ; let i= index;">
+                                <ng-container *ngIf="i !== 0">
+                                    <td> {{task.taskMasterTitle}} </td>
+                                    <td> {{task.taskDesc}} </td>
+                                    <td> {{task.estHr}}</td>
+                                    <td> {{task.actualHr}}</td>
+                                    <td *ngIf="task.statusTitle === 'REMAINING'">
+                                        <span class="badge badge-secondary">REMAINING </span>
+                                    </td>
+                                    <td *ngIf="task.statusTitle === 'INPROGRESS'">
+                                        <span class="badge badge-primary">INPROGRESS</span>
+                                    </td>
+                                    <td *ngIf="task.statusTitle === 'COMPLETED'">
+                                        <span class="badge badge-success">COMPLETED</span>
+                                    </td>
+                                    <td *ngIf="task.isTrackerUsed">
+                                        <i class="fa fa-clock-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
+                                            placement="bottom"></i>
+                                    </td>
+                                    <td *ngIf="!task.isTrackerUsed">
+                                        <i class="fa fa-times-circle-o red-icon" aria-hidden="true"
+                                            ngbTooltip="Without tracker" placement="bottom"></i>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </tr> -->
+                </ng-container>
+            </tbody>
+        </table>
+
+        <div class="row mt-4 mb-4 float-right" *ngIf="dailyUpdateDetail.length > 0">
+            <div class="col-12">
+                <ngb-pagination [collectionSize]="dailyUpdateDetail.length" #numPages
+                    [pageSize]="f['itemsPerPage']['value']" [(page)]="currentPage"
+                    (pageChange)="onPageChange(currentPage)">
+                </ngb-pagination>
+            </div>
+        </div>
+
+    </form>
+</div>

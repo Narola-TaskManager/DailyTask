@@ -1,151 +1,158 @@
-<form [formGroup]="taskForm" (ngSubmit)="onSubmit(taskForm.valid)">
+<div class="py-3">
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit(taskForm.valid)">
 
-    <div class="d-flex mb-3">
-        <div class="form-check" *ngIf="taskForm.controls.taskList.value.length">
-            <input type="checkbox" class="form-check-input" id="EODCheck" formControlName="isEodUpdate"
-                [value]="taskForm.controls.isEodUpdate.value" (change)="showHideControls($event)"
-                [attr.disabled]="disableEod? true:null">
-            <label class="form-check-label" for="EODCheck">End of day update</label>
+        <div class="d-flex mb-3">
+            <div class="form-check" *ngIf="taskForm.controls.taskList.value.length">
+                <input type="checkbox" class="form-check-input" id="EODCheck" formControlName="isEodUpdate"
+                    [value]="taskForm.controls.isEodUpdate.value" (change)="showHideControls($event)"
+                    [attr.disabled]="disableEod? true:null">
+                <label class="form-check-label" for="EODCheck">End of day update</label>
+            </div>
+            <a href="javascript:void(0)" class="ml-auto" (click)="addNewTaskBlogs()" *ngIf="!isNewtaskDissabled">
+                <i class="fa fa-plus-circle " aria-hidden="true"></i> Add New Task
+            </a>
+            <a href="javascript:void(0)" class="ml-auto disable" *ngIf="isNewtaskDissabled"
+                ngbTooltip="End of day status already updated. Can't add new task." placement="top">
+                <i class="fa fa-plus-circle " aria-hidden="true"></i> Add New Task
+            </a>
         </div>
-        <a href="javascript:void(0)" class="ml-auto" (click)="addNewTaskBlogs()" *ngIf="!isNewtaskDissabled">
-            <i class="fa fa-plus-circle " aria-hidden="true"></i> Add New Task
-        </a>
-        <a href="javascript:void(0)" class="ml-auto disable" *ngIf="isNewtaskDissabled"
-            ngbTooltip="End of day status already updated. Can't add new task." placement="top">
-            <i class="fa fa-plus-circle " aria-hidden="true"></i> Add New Task
-        </a>
-    </div>
 
-    <table class="table">
-        <thead>
-            <th>Project</th>
-            <th>Task</th>
-            <th>Description</th>
-            <th>Estimated Hour</th>
-            <th *ngIf="isControlsVisible">Actual Hour</th>
-            <th *ngIf="isControlsVisible">Status </th>
-            <th *ngIf="isControlsVisible">Tracker</th>
-            <th></th>
-        </thead>
-        <tbody>
-            <ng-container formArrayName="taskList"
-                *ngFor="let blog of projectDetail.value; let i = index ;trackBy:trackByIndex">
-                <tr [formGroupName]="i">
-                    <td>
-                        <select class="form-control dropdown-width" formControlName="projectId">
-                            <option value="null">Select Project</option>
-                            <option *ngFor="let project of projectList" [value]="project.projectId">
-                                {{project.projectName}}
-                            </option>
-                        </select>
-                        <div *ngIf="submitted" class="error-message">
-                            <small *ngIf="projectDetail.controls[i].get('projectId').errors?.required"
-                                class="error-message">
-                                Select your project
-                            </small>
-                        </div>
-                    </td>
-                    <td>
-                        <select class="form-control dropdown-width" formControlName="taskMasterId">
-                            <option value="null">Select Task</option>
-                            <option
-                                *ngFor="let j of getTaskByProjectId(taskForm.controls['taskList']?.value[i]?.projectId)"
-                                [value]="j.taskMasterId">
-                                {{j.taskMasterTitle}}
-                            </option>
-                        </select>
-                        <div *ngIf="submitted" class="error-message">
-                            <small *ngIf="projectDetail.controls[i].get('taskMasterId').errors?.required"
-                                class="error-message">
-                                Select your Task
-                            </small>
-                        </div>
-                    </td>
-                    <td>
-                        {{projectDetail.controls[i].get('taskDesc').value}}
-                        <textarea class="form-control description" rows="3" placeholder="Description"
-                            formControlName="taskDesc">
+        <table class="table">
+            <thead>
+                <th class="cell-1">Project</th>
+                <th class="cell-2">Task</th>
+                <th class="cell-3">Description</th>
+                <th class="cell-4">Estimated Hours</th>
+                <th class="cell-5" *ngIf="isControlsVisible">Actual Hours</th>
+                <th class="cell-6" *ngIf="isControlsVisible">Status</th>
+                <th class="cell-7" *ngIf="isControlsVisible">
+                    <i class="fa fa-clock-o" aria-hidden="true" ngbTooltip="Tracker" placement="bottom"></i>
+                </th>
+                <th class="cell-8"></th>
+            </thead>
+            <tbody>
+                <ng-container formArrayName="taskList"
+                    *ngFor="let blog of projectDetail.value; let i = index ;trackBy:trackByIndex">
+                    <tr [formGroupName]="i">
+                        <td cell-1>
+                            <select class="form-control dropdown-width w-100" formControlName="projectId">
+                                <option value="null">Select Project</option>
+                                <option *ngFor="let project of projectList" [value]="project.projectId">
+                                    {{project.projectName}}
+                                </option>
+                            </select>
+                            <div *ngIf="submitted" class="error-message">
+                                <small *ngIf="projectDetail.controls[i].get('projectId').errors?.required"
+                                    class="error-message">
+                                    Select your project
+                                </small>
+                            </div>
+                        </td>
+                        <td cell-2>
+                            <select class="form-control dropdown-width w-100" formControlName="taskMasterId">
+                                <option value="null">Select Task</option>
+                                <option
+                                    *ngFor="let j of getTaskByProjectId(taskForm.controls['taskList']?.value[i]?.projectId)"
+                                    [value]="j.taskMasterId">
+                                    {{j.taskMasterTitle}}
+                                </option>
+                            </select>
+                            <div *ngIf="submitted" class="error-message">
+                                <small *ngIf="projectDetail.controls[i].get('taskMasterId').errors?.required"
+                                    class="error-message">
+                                    Select your Task
+                                </small>
+                            </div>
+                        </td>
+                        <td cell-3>
+                            <textarea class="form-control" rows="3" placeholder="Description"
+                                formControlName="taskDesc">
                                 </textarea>
-                        <div *ngIf="submitted" class="error-message">
-                            <small *ngIf="projectDetail.controls[i].get('taskDesc').errors?.required"
-                                class="error-message">
-                                Description required
-                            </small>
-                        </div>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" placeholder="0" formControlName="estHr">
-                        <small *ngIf="projectDetail.controls[i].get('estHr').errors?.pattern" class="error-message">
-                            Enter valid hour
-                        </small>
-                        <div *ngIf="submitted" class="error-message">
-                            <small *ngIf="projectDetail.controls[i].get('estHr').errors?.required"
-                                class="error-message">
-                                Estimated hour required
-                            </small>
-                        </div>
-                    </td>
-                    <td *ngIf="isControlsVisible">
-                        <div *ngIf="isControlsVisible">
-                            <input type="text" class="form-control" placeholder="0" formControlName="actualHr">
-                            <small *ngIf="projectDetail.controls[i].get('actualHr').errors?.pattern"
-                                class="error-message">
+                            <div *ngIf="submitted" class="error-message">
+                                <small *ngIf="projectDetail.controls[i].get('taskDesc').errors?.required"
+                                    class="error-message">
+                                    Description required
+                                </small>
+                            </div>
+                        </td>
+                        <td cell-4>
+                            <input type="text" class="form-control" placeholder="0" formControlName="estHr">
+                            <small *ngIf="projectDetail.controls[i].get('estHr').errors?.pattern" class="error-message">
                                 Enter valid hour
                             </small>
                             <div *ngIf="submitted" class="error-message">
-                                <small *ngIf="projectDetail.controls[i].get('actualHr').errors?.required"
+                                <small *ngIf="projectDetail.controls[i].get('estHr').errors?.required"
                                     class="error-message">
-                                    Actual hour required
+                                    Estimated hour required
                                 </small>
                             </div>
-                        </div>
-                    </td>
-                    <td *ngIf="isControlsVisible">
-                        <select class="form-control dropdown-width" formControlName="status">
-                            <option value="null">Select Status</option>
-                            <option *ngFor="let status of taskStatus" [ngValue]="status.statusId">
-                                {{status.statusTitle}}
-                            </option>
-                        </select>
-                        <div *ngIf="submitted" class="error-message">
-                            <small *ngIf="projectDetail.controls[i].get('status').errors?.required"
-                                class="error-message">
-                                Select project status
-                            </small>
-                        </div>
-                    </td>
-                    <td *ngIf="isControlsVisible">
-                        <input type="checkbox" class="form-check-input ml-3" id="exampleCheck1"
-                            formControlName="isTrackerUsed">
-                    </td>
-                    <td *ngIf="!blog['taskId']">
-                        <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="Delete"
-                            placement="bottom" (click)="deleteTask(i)">
-                        </i>
-                    </td>
-                </tr>
-            </ng-container>
-        </tbody>
-    </table>
+                        </td>
+                        <td cell-5 *ngIf="isControlsVisible">
+                            <div *ngIf="isControlsVisible">
+                                <input type="text" class="form-control" placeholder="0" formControlName="actualHr">
+                                <small *ngIf="projectDetail.controls[i].get('actualHr').errors?.pattern"
+                                    class="error-message">
+                                    Enter valid hour
+                                </small>
+                                <div *ngIf="submitted" class="error-message">
+                                    <small *ngIf="projectDetail.controls[i].get('actualHr').errors?.required"
+                                        class="error-message">
+                                        Actual hour required
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+                        <td cell-6 *ngIf="isControlsVisible">
+                            <select class="form-control dropdown-width w-100" formControlName="status">
+                                <option value="null">Select Status</option>
+                                <option *ngFor="let status of taskStatus" [ngValue]="status.statusId">
+                                    {{status.statusTitle}}
+                                </option>
+                            </select>
+                            <div *ngIf="submitted" class="error-message">
+                                <small *ngIf="projectDetail.controls[i].get('status').errors?.required"
+                                    class="error-message">
+                                    Select project status
+                                </small>
+                            </div>
+                        </td>
+                        <td cell-7 *ngIf="isControlsVisible">
+                            <!-- <input type="checkbox" class="form-check-input ml-3" id="exampleCheck1"
+                                formControlName="isTrackerUsed"> -->
 
-    <button type="submit" class="btn btn-primary mt-4"
-        *ngIf="taskForm.controls['taskList']['value'].length > 0 && isControlsVisible"
-        [disabled]="isBtnDissabled ? true : t.close() ">
-        <span ngbTooltip="End of day status already updated. Can't update again." placement="top" #t="ngbTooltip">
-            Submit
-        </span>
-    </button>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1"
+                                    formControlName="isTrackerUsed">
+                            </div>
+                        </td>
+                        <td cell-8 *ngIf="!blog['taskId'] && i !== 0">
+                            <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="Delete"
+                                placement="bottom" (click)="deleteTask(i)">
+                            </i>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
 
-    <button type="submit" class="btn btn-primary mt-4"
-        *ngIf="taskForm.controls['taskList']['value'].length > 0 && !isControlsVisible"
-        [disabled]="isBtnDissabled ? true : null">
-        <span> Submit </span>
-    </button>
+        <button type="submit" class="btn btn-primary mt-4"
+            *ngIf="taskForm.controls['taskList']['value'].length > 0 && isControlsVisible"
+            [disabled]="isBtnDissabled ? true : t.close() ">
+            <span ngbTooltip="End of day status already updated. Can't update again." placement="top" #t="ngbTooltip">
+                Submit
+            </span>
+        </button>
 
-    <div class="error-message">
-        <p *ngIf="backendError">
-            {{backendError}}
-        </p>
-    </div>
+        <button type="submit" class="btn btn-primary mt-4"
+            *ngIf="taskForm.controls['taskList']['value'].length > 0 && !isControlsVisible"
+            [disabled]="isBtnDissabled ? true : null">
+            <span> Submit </span>
+        </button>
 
-</form>
+        <div class="error-message">
+            <p *ngIf="backendError">
+                {{backendError}}
+            </p>
+        </div>
+    </form>
+</div>

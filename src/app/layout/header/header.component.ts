@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import Swal from 'sweetalert2';
 
@@ -12,7 +13,8 @@ export class HeaderComponent implements OnInit {
     isLogin = false;
 
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private router: Router
     ) {
         this.isLogin = this.authService.checkUserLoggedIn();
         this.authService.authStatus.subscribe((message) => {
@@ -33,7 +35,7 @@ export class HeaderComponent implements OnInit {
         this.authService.syncEasyCollab().toPromise().then(res => {
             if (res && (res[`errorMessage`] !== '')) {
                 window.location.reload();
-            } else {
+            } else if (res && (res[`errorMessage`])) {
                 Swal.fire({
                     text: res[`errorMessage`],
                     icon: 'error',
@@ -41,14 +43,10 @@ export class HeaderComponent implements OnInit {
                 }).then();
             }
         }).catch(err => {
-            if (err) {
-                Swal.fire({
-                    text: 'Failed to fetch project from easycollab',
-                    icon: 'error',
-                    confirmButtonText: 'Ok',
-                }).then();
+            if (err[`error`] && err[`error`][`status`] === 401) {
+                this.authService.logout();
+                this.router.navigate(['/']);
             }
         });
-
     }
 }

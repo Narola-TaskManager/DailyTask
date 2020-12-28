@@ -3,6 +3,11 @@
         <div class="login-wrapper">
             <h4> Daily Task manager</h4>
             <p class="sub-title">Please use your EasyCollab credentials</p>
+            <div>
+                <small class="error-message" *ngIf="backendError">
+                    {{backendError}}
+                </small>
+            </div>
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.valid)" class="mt-4">
 
                 <div class="form-group">
@@ -32,12 +37,7 @@
                     <i class="fa fa-spinner fa-spin mr-2" aria-hidden="true" *ngIf="disabledBtn"></i>
                     Login
                 </button>
-                <div>
-                    <small class=" error-message" *ngIf="backendError">
-                        {{backendError}}
-                    </small>
-                </div>
-
+               
             </form>
         </div>
 

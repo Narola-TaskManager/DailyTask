@@ -28,7 +28,8 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" [disabled]="loginForm.valid && disabledBtn">
+                <button type="submit" class="btn btn-primary" [disabled]="disabledBtn">
+                    <i class="fa fa-spinner fa-spin mr-2" aria-hidden="true" *ngIf="disabledBtn"></i>
                     Login
                 </button>
                 <div>

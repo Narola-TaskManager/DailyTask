@@ -12,8 +12,8 @@ import { AuthService } from '../service/auth.service';
 export class LoginComponent implements OnInit {
 
     loginForm: FormGroup;
-    submitted = false;
     backendError;
+    submitted = false;
     disabledBtn = false;
 
     constructor(

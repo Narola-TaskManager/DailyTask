@@ -1,4 +1,4 @@
 export const environment = {
-  production: true ,
-    apiRoot: 'https://taskmanager-narola.herokuapp.com/api'
+    production: true,
+    apiRoot: 'http://clientapp.narola.online:2219/api'
 };

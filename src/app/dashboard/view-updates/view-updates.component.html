@@ -3,122 +3,139 @@
         Hi, <span>{{userName}}</span>
     </h4>
     <hr>
-    <form [formGroup]="viewUpdateForm">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Select Project</label>
-                    <select class="form-control" formControlName="projectId" (change)="onChangeProject()">
-                        <option value="0">All</option>
-                        <option *ngFor="let project of projectsList" [value]="project.projectId">
-                            {{project.projectName}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Select Employee</label>
-                    <select class="form-control" formControlName="userId" placeholder="test" (change)="getTaskDetail()">
-                        <option value="0">All</option>
-                        <option *ngFor="let employee of employeeList" [value]="employee.userId">
-                            {{employee.userName}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
+    <div class="updates-wrapper">
+        <form [formGroup]="viewUpdateForm">
+            <div class="filter-wrapper">
+                <ngb-accordion #acc="ngbAccordion">
+                    <ngb-panel title="Filters">
+                        <ng-template ngbPanelContent>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group mb-0">
+                                        <label for="exampleInputEmail1">Select Project</label>
+                                        <select class="form-control" formControlName="projectId"
+                                            (change)="onChangeProject()">
+                                            <option value="0">All</option>
+                                            <option *ngFor="let project of projectsList" [value]="project.projectId">
+                                                {{project.projectName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group mb-0">
+                                        <label for="exampleInputEmail1">Select Employee</label>
+                                        <select class="form-control" formControlName="userId" placeholder="test"
+                                            (change)="getTaskDetail()">
+                                            <option value="0">All</option>
+                                            <option *ngFor="let employee of employeeList" [value]="employee.userId">
+                                                {{employee.userName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
 
-        <div class="row" *ngIf="dailyUpdateDetail.length > 0">
-            <div class="col-2">
-                <div class="form-group">
-                    <label> Show entries</label>
-                    <select class="form-control" formControlName="itemsPerPage" (change)="changePagesize()">
-                        <option [ngValue]="pageSizeOption" *ngFor="let pageSizeOption of pageSizeOptions">{{
-                            pageSizeOption }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Group By</label>
-                    <select class="form-control" formControlName="groupBy" (change)="getTaskDetail()">
-                        <option *ngFor="let groupByOption of groupByOptions" [value]="groupByOption">
-                            {{groupByOption}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
+                                <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0">
+                                    <div class="form-group mb-0">
+                                        <label for="exampleInputEmail1">Group By</label>
+                                        <select class="form-control" formControlName="groupBy"
+                                            (change)="getTaskDetail()">
+                                            <option *ngFor="let groupByOption of groupByOptions"
+                                                [value]="groupByOption">
+                                                {{groupByOption}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
 
-        <table class="table mt-2" *ngIf="apiCalled">
-            <thead>
-                <th class="update-cell-1">
-                    {{ (this.f['groupBy']['value'] === 'UserWise')? 'Project' : 'Employee' }}
-                </th>
-                <th class="update-cell-2">Task</th>
-                <th class="update-cell-3">Description</th>
-                <th class="update-cell-4">Estimated Hour</th>
-                <th class="update-cell-5">Actual Hour</th>
-                <th class="update-cell-6">Status</th>
-                <th class="update-cell-7">
-                    <i class="fa fa-clock-o" aria-hidden="true" ngbTooltip="Tracker" placement="bottom"></i>
-                </th>
-            </thead>
-            <tbody>
-                <ng-container *ngIf="dailyUpdateDetail.length === 0">
-                    <td colspan="7" class="table-title-td">
-                        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                        No data found.
-                    </td>
-                </ng-container>
-                <ng-container
-                    *ngFor="let project of dailyUpdateDetail | slice: pageSize | slice: 0:f['itemsPerPage']['value']">
-                    <tr>
+                                <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0">
+                                    <div class="form-group mb-0">
+                                        <label> Show entries</label>
+                                        <select class="form-control" formControlName="itemsPerPage"
+                                            (change)="changePagesize()">
+                                            <option [ngValue]="pageSizeOption"
+                                                *ngFor="let pageSizeOption of pageSizeOptions">
+                                                {{ pageSizeOption }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngb-panel>
+                </ngb-accordion>
+            </div>
+
+            <table class="table" *ngIf="apiCalled">
+                <thead>
+                    <th class="update-cell-1">
+                        {{ (this.f['groupBy']['value'] === 'UserWise')? 'Project' : 'Employee' }}
+                    </th>
+                    <th class="update-cell-2">Task</th>
+                    <th class="update-cell-3">Description</th>
+                    <th class="update-cell-4">Estimated Hour</th>
+                    <th class="update-cell-5">Actual Hour</th>
+                    <th class="update-cell-6">Status</th>
+                    <th class="update-cell-7">
+                        <i class="fa fa-clock-o" aria-hidden="true" ngbTooltip="Tracker" placement="bottom"></i>
+                    </th>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="dailyUpdateDetail.length === 0">
                         <td colspan="7" class="table-title-td">
-                            {{ project.groupByTitle }}
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            No data found.
                         </td>
-                    </tr>
-                    <ng-container *ngFor="let user of project.groupResult ; let j= index;">
-                        <tr *ngFor="let task of user.taskList ; let i= index;">
-                            <td class="update-cell-1" [attr.rowspan]="user.taskList.length" *ngIf="i === 0">
-                                {{user.elementTitle}}</td>
-                            <td class="update-cell-2"> {{task.taskMasterTitle}} </td>
-                            <td class="update-cell-3"> {{task.taskDesc}} </td>
-                            <td class="update-cell-4"> {{task.estHr}}</td>
-                            <td class="update-cell-5">
-                                <span *ngIf="task.isEodUpdate">
-                                    {{task.actualHr}}
-                                </span>
-                            </td>
-                            <td class="update-cell-6">
-                                <span *ngIf="task.statusTitle === 'REMAINING' && task.isEodUpdate"
-                                    class="badge badge-secondary">REMAINING</span>
-                                <span *ngIf="task.statusTitle === 'INPROGRESS' && task.isEodUpdate"
-                                    class="badge badge-primary">INPROGRESS</span>
-                                <span *ngIf="task.statusTitle === 'COMPLETED' && task.isEodUpdate"
-                                    class="badge badge-success">COMPLETED</span>
-                            </td>
-                            <td class="update-cell-7">
-                                <i class="fa fa-check-circle-o green-icon" aria-hidden="true" ngbTooltip="With tracker"
-                                    *ngIf="task.isTrackerUsed  && task.isEodUpdate" placement="bottom"></i>
-                                <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="With tracker"
-                                    *ngIf="!task.isTrackerUsed  && task.isEodUpdate" placement="bottom"></i>
+                    </ng-container>
+                    <ng-container
+                        *ngFor="let project of dailyUpdateDetail | slice: pageSize | slice: 0:f['itemsPerPage']['value']">
+                        <tr>
+                            <td colspan="7" class="table-title-td">
+                                {{ project.groupByTitle }}
                             </td>
                         </tr>
+                        <ng-container *ngFor="let user of project.groupResult ; let j= index;">
+                            <tr *ngFor="let task of user.taskList ; let i= index;">
+                                <td class="update-cell-1" [attr.rowspan]="user.taskList.length" *ngIf="i === 0">
+                                    {{user.elementTitle}}</td>
+                                <td class="update-cell-2"> {{task.taskMasterTitle}} </td>
+                                <td class="update-cell-3"> {{task.taskDesc}} </td>
+                                <td class="update-cell-4"> {{task.estHr}}</td>
+                                <td class="update-cell-5">
+                                    <span *ngIf="task.isEodUpdate">
+                                        {{task.actualHr}}
+                                    </span>
+                                </td>
+                                <td class="update-cell-6">
+                                    <span *ngIf="task.statusTitle === 'REMAINING' && task.isEodUpdate"
+                                        class="badge badge-secondary">REMAINING</span>
+                                    <span *ngIf="task.statusTitle === 'INPROGRESS' && task.isEodUpdate"
+                                        class="badge badge-primary">INPROGRESS</span>
+                                    <span *ngIf="task.statusTitle === 'COMPLETED' && task.isEodUpdate"
+                                        class="badge badge-success">COMPLETED</span>
+                                </td>
+                                <td class="update-cell-7">
+                                    <i class="fa fa-check-circle-o green-icon" aria-hidden="true"
+                                        ngbTooltip="With tracker" *ngIf="task.isTrackerUsed  && task.isEodUpdate"
+                                        placement="bottom"></i>
+                                    <i class="fa fa-times-circle-o red-icon" aria-hidden="true"
+                                        ngbTooltip="Without tracker" *ngIf="!task.isTrackerUsed  && task.isEodUpdate"
+                                        placement="bottom"></i>
+                                </td>
+                            </tr>
+                        </ng-container>
                     </ng-container>
-                </ng-container>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <div class="row" *ngIf="dailyUpdateDetail.length > 0">
-            <div class="col-12">
-                <ngb-pagination [collectionSize]="dailyUpdateDetail.length" #numPages
-                    [pageSize]="f['itemsPerPage']['value']" [(page)]="currentPage"
-                    (pageChange)="onPageChange(currentPage)">
-                </ngb-pagination>
+            <div class="row" *ngIf="dailyUpdateDetail.length > 0">
+                <div class="col-12">
+                    <ngb-pagination [collectionSize]="dailyUpdateDetail.length" #numPages
+                        [pageSize]="f['itemsPerPage']['value']" [(page)]="currentPage"
+                        (pageChange)="onPageChange(currentPage)">
+                    </ngb-pagination>
+                </div>
             </div>
-        </div>
-
-    </form>
+        </form>
+    </div>
 </div>

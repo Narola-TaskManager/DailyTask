@@ -3,12 +3,12 @@
         Hi, <span>{{userName}}</span>
     </h4>
     <hr>
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit(taskForm.valid)">
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
 
         <div class="d-flex mb-3">
             <div class="form-check" *ngIf="taskForm.controls.taskList.value.length">
                 <input type="checkbox" class="form-check-input" id="EODCheck" formControlName="isEodUpdate"
-                    [value]="taskForm.controls.isEodUpdate.value" (change)="showHideControls($event)"
+                    [value]="taskForm.controls.isEodUpdate.value" (change)="showHideControls()"
                     [attr.disabled]="disableEod? true:null">
                 <label class="form-check-label" for="EODCheck">End of day update</label>
             </div>
@@ -27,9 +27,9 @@
                 <th class="cell-2">Task</th>
                 <th class="cell-3">Description</th>
                 <th class="cell-4">Estimated Hours</th>
-                <th class="cell-5" *ngIf="isControlsVisible">Actual Hours</th>
-                <th class="cell-6" *ngIf="isControlsVisible">Status</th>
-                <th class="cell-7" *ngIf="isControlsVisible">
+                <th class="cell-5" *ngIf="displayEODFields">Actual Hours</th>
+                <th class="cell-6" *ngIf="displayEODFields">Status</th>
+                <th class="cell-7" *ngIf="displayEODFields">
                     <i class="fa fa-clock-o" aria-hidden="true" ngbTooltip="Tracker" placement="bottom"></i>
                 </th>
                 <th class="cell-8"></th>
@@ -38,7 +38,7 @@
                 <ng-container formArrayName="taskList"
                     *ngFor="let blog of projectDetail.value; let i = index ;trackBy:trackByIndex">
                     <tr [formGroupName]="i">
-                        <td cell-1>
+                        <td class="cell-1">
                             <select class="form-control dropdown-width w-100" formControlName="projectId"
                                 (change)="changeControlValue()">
                                 <option value="null">Select Project</option>
@@ -53,7 +53,7 @@
                                 </small>
                             </div>
                         </td>
-                        <td cell-2>
+                        <td class="cell-2">
                             <select class="form-control dropdown-width w-100" formControlName="taskMasterId"
                                 (change)="changeControlValue()">
                                 <option value="null">Select Task</option>
@@ -70,9 +70,9 @@
                                 </small>
                             </div>
                         </td>
-                        <td cell-3>
+                        <td class="cell-3">
                             <textarea class="form-control" rows="3" placeholder="Description" formControlName="taskDesc"
-                                (change)="changeControlValue()">
+                                (input)="changeControlValue()">
                                 </textarea>
                             <div *ngIf="submitted" class="error-message">
                                 <small *ngIf="projectDetail.controls[i].get('taskDesc').errors?.required"
@@ -81,9 +81,9 @@
                                 </small>
                             </div>
                         </td>
-                        <td cell-4>
+                        <td class="cell-4">
                             <input type="text" class="form-control" placeholder="0" formControlName="estHr"
-                                (change)="changeControlValue()">
+                                (input)="changeControlValue()">
                             <small *ngIf="projectDetail.controls[i].get('estHr').errors?.pattern" class="error-message">
                                 Enter valid hour
                             </small>
@@ -94,10 +94,10 @@
                                 </small>
                             </div>
                         </td>
-                        <td cell-5 *ngIf="isControlsVisible">
-                            <div *ngIf="isControlsVisible">
+                        <td class="cell-5" *ngIf="displayEODFields">
+                            <div *ngIf="displayEODFields">
                                 <input type="text" class="form-control" placeholder="0" formControlName="actualHr"
-                                    (change)="changeControlValue()">
+                                    (input)="changeControlValue()">
                                 <small *ngIf="projectDetail.controls[i].get('actualHr').errors?.pattern"
                                     class="error-message">
                                     Enter valid hour
@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td cell-6 *ngIf="isControlsVisible">
+                        <td class="cell-6" *ngIf="displayEODFields">
                             <select class="form-control dropdown-width w-100" formControlName="status"
                                 (change)="changeControlValue()">
                                 <option value="null">Select Status</option>
@@ -125,13 +125,13 @@
                                 </small>
                             </div>
                         </td>
-                        <td cell-7 *ngIf="isControlsVisible">
+                        <td class="cell-7" *ngIf="displayEODFields">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1"
                                     formControlName="isTrackerUsed" (change)="changeControlValue()">
                             </div>
                         </td>
-                        <td cell-8 *ngIf="!blog['taskId']">
+                        <td class="cell-8" *ngIf="!blog['taskId']">
                             <i class="fa fa-times-circle-o red-icon" aria-hidden="true" ngbTooltip="Delete"
                                 placement="bottom" (click)="deleteTask(i)">
                             </i>
@@ -142,15 +142,15 @@
         </table>
 
         <button type="submit" class="btn btn-primary mt-4"
-            *ngIf="taskForm.controls['taskList']['value'].length > 0 && isControlsVisible"
-            [disabled]="isBtnDissabled ? true : t.close() ">
+            *ngIf="taskForm.controls['taskList']['value'].length > 0 && displayEODFields"
+            [disabled]="(isBtnDissabled) ? true : t.close() ">
             <span ngbTooltip="End of day status already updated. Can't update again." placement="top" #t="ngbTooltip">
                 Submit
             </span>
         </button>
         <button type="submit" class="btn btn-primary mt-4"
-            *ngIf="taskForm.controls['taskList']['value'].length > 0 && !isControlsVisible"
-            [disabled]="isBtnDissabled ? true : null">
+            *ngIf="taskForm.controls['taskList']['value'].length > 0 && !displayEODFields"
+            [disabled]="(isBtnDissabled) ? true : null">
             <span> Submit </span>
         </button>
 

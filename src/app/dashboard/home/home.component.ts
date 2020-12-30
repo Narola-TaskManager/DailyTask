@@ -10,7 +10,6 @@ import { AuthService } from 'src/app/auth/service/auth.service';
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
     taskForm: FormGroup;
     submitted = false;
     backendError = null;
@@ -20,7 +19,7 @@ export class HomeComponent implements OnInit {
         { statusId: 2, statusTitle: 'INPROGRESS' },
         { statusId: 3, statusTitle: 'REMAINING' }
     ];
-    isControlsVisible = false;
+    displayEODFields = false;
     isBtnDissabled = false;
     isNewtaskDissabled = false;
     projectwiseTaskList = [];
@@ -37,41 +36,16 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.initFormGroup();
         this.getProjectList();
         this.getTaskList();
-        this.initFormGroup();
     }
 
-    changeControlValue() {
-        if (this.isBtnDissabled && !this.isNewtaskDissabled) {
-            // this.taskForm.valueChanges.subscribe(change => {
-            // if (change) {
-            this.isBtnDissabled = false;
-            this.backendError = null;
-            // }
-            // });
-        }
-    }
-
+    // initialize form group
     initFormGroup() {
         this.taskForm = this.formBuilder.group({
             isEodUpdate: new FormControl(false),
             taskList: this.formBuilder.array([]),
-        });
-    }
-
-    addNewControlWithValue(controlValue: any = {}) {
-        return this.formBuilder.group({
-            projectId: new FormControl(controlValue.projectId || null, Validators.compose([Validators.required])),
-            taskMasterId: new FormControl(controlValue.taskMasterId || null, Validators.compose([Validators.required])),
-            taskDesc: new FormControl(controlValue.taskDesc || '', Validators.compose([Validators.required])),
-            estHr: new FormControl(controlValue.estHr || null, Validators.compose([
-                Validators.required,
-                Validators.pattern(/^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$/)])),
-            taskId: new FormControl(controlValue.taskId || null),
-            actualHr: new FormControl(controlValue.actualHr || null),
-            status: new FormControl(controlValue.status || null),
-            isTrackerUsed: new FormControl(controlValue.isTrackerUsed || false),
         });
     }
 
@@ -86,12 +60,6 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    // bind task dropdown
-    getTaskByProjectId(selectedValue) {
-        const taskList = this.projectList.find((item) => item.projectId == selectedValue);
-        return taskList ? taskList.taskMasters : [];
-    }
-
     // get all saved task on page load
     getTaskList() {
         this.dashboardService.getAllSaveTask().toPromise().then(res => {
@@ -100,7 +68,7 @@ export class HomeComponent implements OnInit {
                 const taskList = res[`data`][`taskList`];
                 taskList.forEach(element => {
                     if (element[`isEodUpdate`]) {
-                        this.isControlsVisible = true;
+                        this.displayEODFields = true;
                         this.taskForm.patchValue({
                             isEodUpdate: true
                         });
@@ -128,6 +96,37 @@ export class HomeComponent implements OnInit {
         this.projectDetail.push(this.addNewControlWithValue());
     }
 
+    // create form group with value and without value
+    addNewControlWithValue(controlValue: any = {}) {
+        return this.formBuilder.group({
+            projectId: new FormControl(controlValue.projectId || null, Validators.compose([Validators.required])),
+            taskMasterId: new FormControl(controlValue.taskMasterId || null, Validators.compose([Validators.required])),
+            taskDesc: new FormControl(controlValue.taskDesc || '', Validators.compose([Validators.required])),
+            estHr: new FormControl(controlValue.estHr || null, Validators.compose([
+                Validators.required,
+                Validators.pattern(/^\s*(?=.*[1-9])\d{1,2}(?:\.\d{1,2})?\s*$/)])),
+            taskId: new FormControl(controlValue.taskId || null),
+            actualHr: new FormControl(controlValue.actualHr || null),
+            status: new FormControl(controlValue.status || null),
+            isTrackerUsed: new FormControl(controlValue.isTrackerUsed || false),
+        });
+    }
+
+    changeControlValue() {
+        this.backendError = null;
+        if (!this.isNewtaskDissabled) {
+            this.isBtnDissabled = false;
+        }
+    }
+
+    // bind task dropdown
+    getTaskByProjectId(selectedValue) {
+        const taskList = this.projectList.find((item) => item.projectId == selectedValue);
+        return taskList ? taskList.taskMasters : [];
+    }
+
+    get f() { return this.taskForm.controls.taskList; }
+
     get projectDetail(): FormArray {
         return this.taskForm.get('taskList') as FormArray;
     }
@@ -150,13 +149,12 @@ export class HomeComponent implements OnInit {
         }, 100);
     }
 
-    showHideControls(events) {
-        this.isControlsVisible = events.target[`checked`];
-        const groupItems = this.projectDetail.controls;
-
-        if (this.isControlsVisible) {
+    showHideControls() {
+        this.displayEODFields = this.taskForm.value.isEodUpdate;
+        const taskControlArr = this.projectDetail.controls;
+        if (this.displayEODFields) {
             this.isBtnDissabled = false;
-            groupItems.forEach((element) => {
+            taskControlArr.forEach((element) => {
                 const actualHr = element[`controls`][`actualHr`];
                 const status = element[`controls`][`status`];
 
@@ -167,7 +165,7 @@ export class HomeComponent implements OnInit {
                 status.updateValueAndValidity();
             });
         } else {
-            groupItems.forEach((element) => {
+            taskControlArr.forEach((element) => {
                 const actualHr = element[`controls`][`actualHr`];
                 const status = element[`controls`][`status`];
 
@@ -180,16 +178,14 @@ export class HomeComponent implements OnInit {
         }
     }
 
-    get f() { return this.taskForm.controls.taskList; }
-
-    onSubmit(isFormValid) {
+    onSubmit() {
         this.submitted = true;
-        if (!isFormValid) {
+        if (!this.taskForm.valid) {
             return;
         }
         this.backendError = null;
+        this.isBtnDissabled = true;
         this.dashboardService.saveTask(this.taskForm.value).toPromise().then(res => {
-
             if (res && res[`data`]) {
                 (this.projectDetail).clear();
                 const taskList = res[`data`][`taskList`];
@@ -200,24 +196,19 @@ export class HomeComponent implements OnInit {
                     }, 100);
                 });
             }
-
-            this.isBtnDissabled = true;
-            if (this.isControlsVisible) {
+            let messageText = 'Task saved successfully.';
+            if (this.displayEODFields) {
                 this.isNewtaskDissabled = true;
                 this.disableEod = true;
-                Swal.fire({
-                    text: 'Your EOD update has been succussfully sent.',
-                    icon: 'success',
-                    confirmButtonText: 'Ok',
-                }).then();
-            } else {
-                Swal.fire({
-                    text: 'Successfully Added/Updated',
-                    icon: 'success',
-                    confirmButtonText: 'Ok',
-                }).then();
+                messageText = 'Your EOD update has been succussfully sent.';
             }
+            Swal.fire({
+                text: messageText,
+                icon: 'success',
+                confirmButtonText: 'Ok',
+            }).then();
         }).catch(err => {
+            this.isBtnDissabled = false;
             if (err && err.error) {
                 this.backendError = err.error[`errorMessage`];
             }
@@ -231,5 +222,4 @@ export class HomeComponent implements OnInit {
     trackByIndex(index) {
         return index;
     }
-
 }

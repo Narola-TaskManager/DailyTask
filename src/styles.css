@@ -59,6 +59,10 @@ app-login {
   text-align: center;
 }
 
+.username span {
+  color: var(--blue);
+}
+
 .table-title-td {
   text-align: center;
   background: var(--blue);

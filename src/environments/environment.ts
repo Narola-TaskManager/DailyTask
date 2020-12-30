@@ -4,7 +4,6 @@
 
 export const environment = {
     production: false,
-    //   apiRoot: 'https://taskmanager-narola.herokuapp.com/api'
     // apiRoot: 'http://192.168.100.41:8083/api'
     apiRoot: 'http://clientapp.narola.online:2219/api'
 };

@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
                 this.authService.setToken(res[`data`].token);
                 const permissionsArr = [res[`data`].roleId];
                 localStorage.setItem('userrole', JSON.stringify(permissionsArr));
+                localStorage.setItem('userName', res[`data`].userFullName);
                 this.permissionsService.loadPermissions(permissionsArr);
                 if (res[`data`].roleId === 57) {
                     this.router.navigate(['/dashboard']);

@@ -25,13 +25,16 @@ export class HomeComponent implements OnInit {
     isNewtaskDissabled = false;
     projectwiseTaskList = [];
     disableEod = true;
+    userName = '';
 
     constructor(
         private dashboardService: DashboardService,
         private authService: AuthService,
         private formBuilder: FormBuilder,
         private router: Router
-    ) { }
+    ) {
+        this.userName = localStorage.getItem('userName') || '';
+    }
 
     ngOnInit(): void {
         this.getProjectList();

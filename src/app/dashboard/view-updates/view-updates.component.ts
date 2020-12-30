@@ -19,6 +19,7 @@ export class ViewUpdatesComponent implements OnInit {
     paginationReqPayload = {};
     dailyUpdateDetail = [];
     apiCalled = false;
+    userName = '';
 
     groupByOptions = [
         'Project',
@@ -40,6 +41,7 @@ export class ViewUpdatesComponent implements OnInit {
             currentPage: new FormControl(1),
             groupBy: new FormControl('Project')
         });
+        this.userName = localStorage.getItem('userName') || '';
     }
 
     ngOnInit(): void {

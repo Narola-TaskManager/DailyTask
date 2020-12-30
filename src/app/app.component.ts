@@ -18,5 +18,8 @@ export class AppComponent {
         if (role) {
             this.permissionsService.loadPermissions(role);
         }
+        if (!localStorage.getItem('userName')) {
+            localStorage.clear();
+        }
     }
 }

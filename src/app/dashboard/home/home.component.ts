@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
 
     taskForm: FormGroup;
     submitted = false;
-    backendError;
+    backendError = null;
     projectList = [];
     taskStatus = [
         { statusId: 1, statusTitle: 'COMPLETED' },
@@ -47,6 +47,7 @@ export class HomeComponent implements OnInit {
             // this.taskForm.valueChanges.subscribe(change => {
             // if (change) {
             this.isBtnDissabled = false;
+            this.backendError = null;
             // }
             // });
         }
@@ -183,10 +184,10 @@ export class HomeComponent implements OnInit {
 
     onSubmit(isFormValid) {
         this.submitted = true;
-
         if (!isFormValid) {
             return;
         }
+        this.backendError = null;
         this.dashboardService.saveTask(this.taskForm.value).toPromise().then(res => {
 
             if (res && res[`data`]) {

@@ -81,12 +81,7 @@ export class HomeComponent implements OnInit {
             } else {
                 this.addNewTaskBlogs();
             }
-        }).catch(err => {
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
-            }
-        });
+        }).catch(err => {});
     }
 
     // Add new task
@@ -211,10 +206,6 @@ export class HomeComponent implements OnInit {
             this.isBtnDissabled = false;
             if (err && err.error) {
                 this.backendError = err.error[`errorMessage`];
-            }
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
             }
         });
     }

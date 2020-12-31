@@ -56,10 +56,6 @@ export class ViewUpdatesComponent implements OnInit {
             this.projectsList = res[`data`];
         }).catch(err => {
             this.projectsList = [];
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
-            }
         });
     }
 
@@ -74,10 +70,7 @@ export class ViewUpdatesComponent implements OnInit {
                 this.dailyUpdateDetail = res[`data`][`groupedList`];
             }
         }).catch(err => {
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
-            }
+            this.dailyUpdateDetail = [];
         });
     }
 
@@ -109,10 +102,7 @@ export class ViewUpdatesComponent implements OnInit {
                 }
                 this.getTaskDetail();
             }).catch(err => {
-                if (err[`error`] && err[`error`][`status`] === 401) {
-                    this.authService.logout();
-                    this.router.navigate(['/']);
-                }
+                this.employeeList = [];
             });
         } else {
             this.getTaskDetail();

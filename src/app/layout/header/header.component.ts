@@ -42,11 +42,6 @@ export class HeaderComponent implements OnInit {
                     confirmButtonText: 'Ok',
                 }).then();
             }
-        }).catch(err => {
-            if (err[`error`] && err[`error`][`status`] === 401) {
-                this.authService.logout();
-                this.router.navigate(['/']);
-            }
-        });
+        }).catch(err => { });
     }
 }

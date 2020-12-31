@@ -37,9 +37,9 @@ export class ViewUpdatesComponent implements OnInit {
         this.viewUpdateForm = this.formBuilder.group({
             projectId: new FormControl('0'),
             userId: new FormControl('0'),
-            itemsPerPage: new FormControl(2),
+            itemsPerPage: new FormControl(20),
             currentPage: new FormControl(1),
-            groupBy: new FormControl('Project')
+            groupBy: new FormControl('User')
         });
         this.userName = localStorage.getItem('userName') || '';
     }

@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit {
 
     // bind task dropdown
     getTaskByProjectId(selectedValue) {
-        const taskList = this.projectList.find((item) => item.projectId == selectedValue);
+        const taskList = this.projectList.find((item) => item.projectId === selectedValue);
         return taskList ? taskList.taskMasters : [];
     }
 

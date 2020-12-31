@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
     backendError;
     submitted = false;
     disabledBtn = false;
+    userIds = [57, 76, 109, 71];
 
     constructor(
         private router: Router,
@@ -59,11 +60,13 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('userrole', JSON.stringify(permissionsArr));
                 localStorage.setItem('userName', res[`data`].userFullName);
                 this.permissionsService.loadPermissions(permissionsArr);
-                if (res[`data`].roleId === 57) {
-                    this.router.navigate(['/dashboard']);
-                } else {
-                    this.router.navigate(['/updates']);
-                }
+                this.userIds.forEach(id => {
+                    if (res[`data`].roleId === id) {
+                        this.router.navigate(['/dashboard']);
+                    } else {
+                        this.router.navigate(['/updates']);
+                    }
+                });
             }
         }).catch(err => {
             this.disabledBtn = false;

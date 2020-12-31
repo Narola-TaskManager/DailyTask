@@ -14,7 +14,7 @@ const routes: Routes = [
         canActivate: [NgxPermissionsGuard],
         data: {
             permissions: {
-                only: '57',
+                only: 'ROLE_USER',
                 redirectTo: '/updates'
             }
         }
@@ -25,7 +25,7 @@ const routes: Routes = [
         canActivate: [NgxPermissionsGuard],
         data: {
             permissions: {
-                except: ['57'],
+                only: 'ROLE_ADMIN',
                 redirectTo: '/dashboard'
             }
         }

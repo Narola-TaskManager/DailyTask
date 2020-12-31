@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { AuthService } from '../service/auth.service';
+import { EC_ROLES } from '../../share/constants';
 
 @Component({
     selector: 'app-login',
@@ -54,15 +55,20 @@ export class LoginComponent implements OnInit {
         this.disabledBtn = true;
         this.authService.login(this.loginForm.value).toPromise().then(res => {
             if (res && res[`data`]) {
-                this.authService.setToken(res[`data`].token);
-                const permissionsArr = [res[`data`].roleId];
-                localStorage.setItem('userrole', JSON.stringify(permissionsArr));
-                localStorage.setItem('userName', res[`data`].userFullName);
-                this.permissionsService.loadPermissions(permissionsArr);
-                if (res[`data`].roleId === 57) {
-                    this.router.navigate(['/dashboard']);
-                } else {
+                const loginRes = res[`data`];
+                this.authService.setToken(loginRes.token);
+                localStorage.setItem('userName', loginRes.userFullName);
+                let permissionsArr = [];
+                if (EC_ROLES.ADMIN.indexOf(loginRes.roleId.trim()) > -1) {
+                    permissionsArr = ['ROLE_ADMIN'];
+                    localStorage.setItem('userrole', JSON.stringify(permissionsArr));
+                    this.permissionsService.loadPermissions(permissionsArr);
                     this.router.navigate(['/updates']);
+                } else {
+                    permissionsArr = ['ROLE_USER'];
+                    localStorage.setItem('userrole', JSON.stringify(permissionsArr));
+                    this.permissionsService.loadPermissions(permissionsArr);
+                    this.router.navigate(['/dashboard']);
                 }
             }
         }).catch(err => {

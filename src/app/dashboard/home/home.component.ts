@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DashboardService } from '../service/dashboard.service';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/service/auth.service';
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
     taskForm: FormGroup;
     submitted = false;
     backendError = null;
@@ -28,9 +28,7 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private dashboardService: DashboardService,
-        private authService: AuthService,
         private formBuilder: FormBuilder,
-        private router: Router
     ) {
         this.userName = localStorage.getItem('userName') || '';
     }
@@ -116,7 +114,7 @@ export class HomeComponent implements OnInit {
 
     // bind task dropdown
     getTaskByProjectId(selectedValue) {
-        const taskList = this.projectList.find((item) => item.projectId === selectedValue);
+        const taskList = this.projectList.find((item) => Number(item.projectId) === Number(selectedValue));
         return taskList ? taskList.taskMasters : [];
     }
 

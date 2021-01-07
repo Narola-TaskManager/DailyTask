@@ -1,0 +1,122 @@
+<div class="container">
+    <h4 class="username mt-3">
+        <span>Manage Google Spread Sheets</span>
+        <a href="javascript:void(0)" (click)="openSheet(null)" class="link-text header-icon">
+            <i class="fa fa-external-link ml-2" aria-hidden="true"
+                ngbTooltip="View the default format of google spread sheet" placement="bottom"></i>
+        </a>
+    </h4>
+    <hr>
+    <div class="row">
+        <div class="col-6 d-flex">
+            <!-- <a href="javascript:void(0)" (click)="openSheet(null)" class="link-text header-icon">
+                View the default format of google spread sheet
+                <i class="fa fa-external-link ml-2" aria-hidden="true"
+                    ngbTooltip="View the default format of google spread sheet" placement="bottom"></i>
+            </a> -->
+        </div>
+        <div class="col-6 d-flex">
+            <i class="fa fa-plus-circle ml-auto add-button mb-3 " aria-hidden="true" ngbTooltip="Add new link"
+                placement="bottom" (click)="open(content);addEditGooleLink(null)"></i>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <th> Project </th>
+                    <th>Google sheet link</th>
+                    <th>Edit</th>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="projectsDetails.length === 0">
+                        <td colspan="3" class="table-title-td">
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            No data found.
+                        </td>
+                    </ng-container>
+
+                    <ng-container *ngIf="projectsDetails.length > 0">
+                        <tr *ngFor="let project of projectsDetails ; let i = index;">
+                            <ng-container *ngIf="project.googleSpreadSheetUrl">
+                                <td>
+                                    {{project.projectName}}
+                                </td>
+                                <td class="google-link">
+                                    {{project.googleSpreadSheetUrl}}
+                                    <a href="javascript:void(0)" (click)="openSheet(project.googleSpreadSheetUrl)"
+                                        class="link-text header-icon">
+                                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <i class="fa fa-pencil link-text header-icon" aria-hidden="true" ngbTooltip="Edit"
+                                        placement="bottom"
+                                        (click)="open(content) ; addEditGooleLink(project.projectId)">
+                                    </i>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <ng-template #content let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h4 class="modal-title username" id="modal-basic-title">
+                <span *ngIf="!isEditLink">Add Link</span>
+                <span *ngIf="isEditLink">Edit Link</span>
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click') ; closePopup()">
+                <span aria-hidden="true" class="error-message">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body m-3">
+            <form [formGroup]="googleLinkForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-12">
+                        <label><strong> Project </strong></label>
+                        <select class="form-control dropdown-width w-100" formControlName="projectId"
+                            *ngIf="!isEditLink" (change)="changeProjectValue()">
+                            <option value="null">Select Project</option>
+                            <option *ngFor="let project of projectDropdown" [value]="project.projectId">
+                                {{project.projectName}}
+                            </option>
+                        </select>
+                        <p *ngIf="isEditLink"> {{selectedProjectForEdit['projectName'] }} </p>
+                        <div *ngIf="submitted" class="error-message">
+                            <small *ngIf="googleLinkForm.get('projectId').errors?.required" class="error-message">
+                                Select project
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <label> <strong> Google spread sheet link </strong> </label>
+                        <textarea class="form-control" rows="4" placeholder="Copy google spread sheet link"
+                            formControlName="googleSpreadsheetUrl">
+                        </textarea>
+                        <div *ngIf="submitted" class="error-message">
+                            <small *ngIf="googleLinkForm.get('googleSpreadsheetUrl').errors?.required"
+                                class="error-message">
+                                Google spread sheet link required
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" (click)=" onSubmit()"> Save </button>
+            <div class="error-message">
+                <small *ngIf="backendError" class="error-message">
+                    {{backendError}}
+                </small>
+            </div>
+        </div>
+    </ng-template>
+
+</div>

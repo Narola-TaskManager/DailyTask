@@ -87,7 +87,7 @@ app-login {
   width: 70px;
 }
 
-.logut-icon {
+.header-icon {
   font-size: 18px;
   cursor: pointer;
 }
@@ -225,4 +225,18 @@ app-login {
   top: 0;
   left: 0;
   width: 100%;
+}
+
+.link-text {
+  color: blue;
+}
+
+.google-link {
+  word-break: break-all;
+}
+
+.add-button {
+  color: green;
+  font-size: 21px;
+  cursor: pointer;
 }

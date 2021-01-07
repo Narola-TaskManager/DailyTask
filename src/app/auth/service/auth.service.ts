@@ -46,7 +46,7 @@ export class AuthService {
     }
 
     syncEasyCollab() {
-        return this.http.get('/projects/synch');
+        return this.http.get('/projects/sync');
     }
 
 }

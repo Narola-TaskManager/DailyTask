@@ -4,6 +4,7 @@ import { HeaderComponent } from './header/header.component';
 import { RouterModule } from '@angular/router';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { FooterComponent } from './footer/footer.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @NgModule({
     declarations: [
@@ -13,7 +14,8 @@ import { FooterComponent } from './footer/footer.component';
     imports: [
         CommonModule,
         NgbTooltipModule,
-        RouterModule
+        RouterModule,
+        NgxPermissionsModule.forChild()
     ],
     exports: [
         HeaderComponent,

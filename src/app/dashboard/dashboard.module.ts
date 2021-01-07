@@ -1,17 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbAccordionModule, NgbPaginationModule, NgbTooltipModule , NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+    NgbAccordionModule, NgbPaginationModule,
+    NgbTooltipModule, NgbDatepickerModule,
+    NgbModalModule
+} from '@ng-bootstrap/ng-bootstrap';
 import { ViewUpdatesComponent } from './view-updates/view-updates.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { AddTaskComponent } from './add-task/add-task.component';
+import { ProjectsGooglesheetComponent } from './projects-googlesheet/projects-googlesheet.component';
 
 
 @NgModule({
     declarations: [
-        HomeComponent,
-        ViewUpdatesComponent
+        ViewUpdatesComponent,
+        AddTaskComponent,
+        ProjectsGooglesheetComponent
     ],
     imports: [
         CommonModule,
@@ -22,6 +28,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
         NgbPaginationModule,
         NgbDatepickerModule,
         NgbAccordionModule,
+        NgbModalModule,
         NgxPermissionsModule.forChild()
     ]
 })

@@ -30,9 +30,7 @@ export class ViewUpdatesComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private dashboardService: DashboardService,
-        private authService: AuthService,
-        private router: Router
+        private dashboardService: DashboardService
     ) {
         this.viewUpdateForm = this.formBuilder.group({
             projectId: new FormControl('0'),

@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
-import { HomeComponent } from './home/home.component';
+import { AddTaskComponent } from './add-task/add-task.component';
+import { ProjectsGooglesheetComponent } from './projects-googlesheet/projects-googlesheet.component';
 import { ViewUpdatesComponent } from './view-updates/view-updates.component';
 
 
@@ -9,7 +10,7 @@ const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     {
         path: 'dashboard',
-        component: HomeComponent,
+        component: AddTaskComponent,
         canActivate: [NgxPermissionsGuard],
         data: {
             permissions: {
@@ -21,6 +22,17 @@ const routes: Routes = [
     {
         path: 'updates',
         component: ViewUpdatesComponent,
+        canActivate: [NgxPermissionsGuard],
+        data: {
+            permissions: {
+                only: 'ROLE_ADMIN',
+                redirectTo: '/dashboard'
+            }
+        }
+    },
+    {
+        path: 'project-links',
+        component: ProjectsGooglesheetComponent,
         canActivate: [NgxPermissionsGuard],
         data: {
             permissions: {

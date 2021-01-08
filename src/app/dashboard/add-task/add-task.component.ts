@@ -25,6 +25,7 @@ export class AddTaskComponent implements OnInit {
     projectwiseTaskList = [];
     disableEod = true;
     userName = '';
+    taskByProjectID = {};
 
     constructor(
         private dashboardService: DashboardService,
@@ -52,9 +53,13 @@ export class AddTaskComponent implements OnInit {
         this.dashboardService.getProjectsAndTask().toPromise().then(res => {
             if (res && res[`data`]) {
                 this.projectList = res[`data`];
+                this.projectList.forEach(project => {
+                    this.taskByProjectID[project.projectId] = project.taskMasters;
+                });
             }
         }).catch(err => {
             this.projectList = [];
+            this.taskByProjectID = {};
         });
     }
 
@@ -114,8 +119,9 @@ export class AddTaskComponent implements OnInit {
 
     // bind task dropdown
     getTaskByProjectId(selectedValue) {
-        const taskList = this.projectList.find((item) => Number(item.projectId) === Number(selectedValue));
-        return taskList ? taskList.taskMasters : [];
+        return this.taskByProjectID[selectedValue] || [];
+        // const taskList = this.projectList.find((item) => Number(item.projectId) === Number(selectedValue));
+        // return taskList ? taskList.taskMasters : [];
     }
 
     get f() { return this.taskForm.controls.taskList; }

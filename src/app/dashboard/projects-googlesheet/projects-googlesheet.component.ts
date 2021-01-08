@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { DashboardService } from '../service/dashboard.service';
+import { LINKS } from '../../share/constants';
 
 @Component({
     selector: 'app-projects-googlesheet',
@@ -19,6 +20,7 @@ export class ProjectsGooglesheetComponent implements OnInit {
     backendError;
     isEditLink = false;
     selectedProjectForEdit = {};
+    linkConstant = LINKS;
 
     constructor(
         private dashboardService: DashboardService,
@@ -91,15 +93,6 @@ export class ProjectsGooglesheetComponent implements OnInit {
     closePopup() {
         this.googleLinkForm.reset();
         this.isEditLink = false;
-    }
-
-    openSheet(url) {
-        if (url) {
-            window.open(url, '_blank');
-        } else {
-            window.open('https://docs.google.com/spreadsheets/d/17K4TQag54D5ucTD1LV_dLn7eu7FtlIZJtusk19eRlPs/' +
-                'edit?ts=5ff5533e#gid=804801340', '_blank');
-        }
     }
 
     onSubmit() {

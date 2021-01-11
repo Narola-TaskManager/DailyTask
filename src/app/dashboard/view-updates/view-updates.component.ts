@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/service/auth.service';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardService } from '../service/dashboard.service';
+import { ManageDateService } from '../service/manage-date.service';
 
 @Component({
     selector: 'app-view-updates',
@@ -20,26 +20,36 @@ export class ViewUpdatesComponent implements OnInit {
     dailyUpdateDetail = [];
     apiCalled = false;
     userName = '';
-
+    minDate: NgbDateStruct;
+    maxDate: NgbDateStruct;
     groupByOptions = [
         'Project',
         'User'
     ];
-
     pageSizeOptions = [2, 5, 10, 15, 20, 25, 50, 100];
+    showHistory = false;
+    dateFilterError = '';
+
 
     constructor(
         private formBuilder: FormBuilder,
-        private dashboardService: DashboardService
+        private dashboardService: DashboardService,
+        private manageDate: ManageDateService
     ) {
+        this.userName = localStorage.getItem('userName') || '';
+        this.minDate = this.manageDate.setMinDate();
+        this.maxDate = this.manageDate.setMaxDate();
+
         this.viewUpdateForm = this.formBuilder.group({
             projectId: new FormControl('0'),
             userId: new FormControl('0'),
-            itemsPerPage: new FormControl(20),
+            itemsPerPage: new FormControl(5),
             currentPage: new FormControl(1),
-            groupBy: new FormControl('User')
+            groupBy: new FormControl('User'),
+            fromDate: new FormControl(this.maxDate),
+            toDate: new FormControl(this.maxDate)
         });
-        this.userName = localStorage.getItem('userName') || '';
+
     }
 
     ngOnInit(): void {
@@ -58,11 +68,8 @@ export class ViewUpdatesComponent implements OnInit {
     }
 
     getTaskDetail() {
-        const selectedFilter = this.f.groupBy.value;
-        const projectId = this.f.projectId.value;
-        const userId = this.f.userId.value;
         this.apiCalled = false;
-        this.dashboardService.getTaskdetail(projectId, userId, selectedFilter).toPromise().then(res => {
+        this.dashboardService.getTaskdetail(this.viewUpdateForm.value).toPromise().then(res => {
             if (res && res[`data`][`groupedList`]) {
                 this.apiCalled = true;
                 this.dailyUpdateDetail = res[`data`][`groupedList`];
@@ -104,6 +111,25 @@ export class ViewUpdatesComponent implements OnInit {
             });
         } else {
             this.getTaskDetail();
+        }
+    }
+
+    onChangeDateFilter() {
+        this.dateFilterError = '';
+        const selectedFromDate = this.manageDate.objectToDate(this.f[`fromDate`].value);
+        const selectedToDate = this.manageDate.objectToDate(this.f[`toDate`].value);
+        const currentDate = this.manageDate.currentDateInDateFormate(this.maxDate);
+
+        if (selectedFromDate > selectedToDate) {
+            this.dateFilterError = 'Please select valid date';
+            this.dailyUpdateDetail = [];
+        } else {
+            this.getTaskDetail();
+        }
+
+        if (selectedFromDate !== currentDate && selectedToDate !== currentDate ||
+            selectedFromDate !== currentDate && selectedToDate === currentDate) {
+            this.showHistory = true;
         }
     }
 }

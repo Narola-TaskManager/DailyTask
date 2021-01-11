@@ -61,6 +61,47 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row mt-3">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>From Date</label>
+                                        <div class="input-group">
+                                            <input class="form-control datepicker" placeholder="yyyy-mm-dd" readonly
+                                                formControlName='fromDate' name="fromDate" ngbDatepicker
+                                                #fromDate="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate"
+                                                [positionTarget]="buttonEl" (ngModelChange)="onChangeDateFilter()">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary calendar fa fa-calendar"
+                                                    #buttonEl (click)="fromDate.toggle()" type="button">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>To Date</label>
+                                        <div class="input-group">
+                                            <input class="form-control datepicker" placeholder="yyyy-mm-dd" readonly
+                                                formControlName='toDate' name="toDate" ngbDatepicker
+                                                #toDate="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate"
+                                                [positionTarget]="buttonEl" (ngModelChange)="onChangeDateFilter()">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary calendar fa fa-calendar"
+                                                    #buttonEl (click)="toDate.toggle()" type="button">
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="error-message">
+                                        <small> {{this.dateFilterError}} </small>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                         </ng-template>
                     </ngb-panel>
                 </ngb-accordion>
@@ -71,11 +112,12 @@
                     <th class="update-cell-1">
                         {{ (this.f['groupBy']['value'] === 'User')? 'Project' : 'Employee' }}
                     </th>
+                    <th  class="update-cell-1" *ngIf="showHistory">Date</th>
                     <th class="update-cell-2">Task</th>
-                    <th class="update-cell-3">Description</th>
-                    <th class="update-cell-4">Estimated Hour</th>
+                    <th class="update-cell-3" *ngIf="!showHistory">Description</th>
+                    <th class="update-cell-4" *ngIf="!showHistory">Estimated Hour</th>
                     <th class="update-cell-5">Actual Hour</th>
-                    <th class="update-cell-6">Status</th>
+                    <th class="update-cell-6" *ngIf="!showHistory">Status</th>
                     <th class="update-cell-7">
                         <i class="fa fa-clock-o" aria-hidden="true" ngbTooltip="Tracker" placement="bottom"></i>
                     </th>
@@ -98,15 +140,17 @@
                             <tr *ngFor="let task of user.taskList ; let i= index;">
                                 <td class="update-cell-1" [attr.rowspan]="user.taskList.length" *ngIf="i === 0">
                                     {{user.elementTitle}}</td>
-                                <td class="update-cell-2"> {{task.taskMasterTitle}} </td>
-                                <td class="update-cell-3"> {{task.taskDesc}} </td>
-                                <td class="update-cell-4"> {{task.estHr}}</td>
-                                <td class="update-cell-5">
-                                    <span *ngIf="task.isEodUpdate">
-                                        {{task.actualHr}}
-                                    </span>
+                                <td class="update-cell-1" *ngIf="showHistory"> {{task.taskCreatedOn}}
                                 </td>
-                                <td class="update-cell-6">
+                                <td class="update-cell-2"> {{task.taskMasterTitle}} </td>
+                                <td class="update-cell-3" *ngIf="!showHistory"> {{task.taskDesc}} </td>
+                                <td class="update-cell-4" *ngIf="!showHistory"> {{task.estHr}}</td>
+                                <td class="update-cell-5">
+                                    <!-- <span *ngIf="task.isEodUpdate"> -->
+                                        {{task.actualHr}}
+                                    <!-- </span> -->
+                                </td>
+                                <td class="update-cell-6" *ngIf="!showHistory">
                                     <span *ngIf="task.statusTitle === 'REMAINING' && task.isEodUpdate"
                                         class="badge badge-secondary">REMAINING</span>
                                     <span *ngIf="task.statusTitle === 'INPROGRESS' && task.isEodUpdate"

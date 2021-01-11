@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ManageDateService } from './manage-date.service';
 
 @Injectable({
     providedIn: 'root'
@@ -8,6 +9,7 @@ export class DashboardService {
 
     constructor(
         private http: HttpClient,
+        private manageDate: ManageDateService
     ) { }
 
     getProjectsAndTask() {
@@ -34,11 +36,14 @@ export class DashboardService {
         return this.http.get('/projects/' + projectId + '/users ');
     }
 
-    getTaskdetail(projectId, userId, filterBy) {
-        return this.http.get('/tasks/report?projectId=' + projectId + '&userId=' + userId + '&groupBy=' + filterBy);
+    getTaskdetail(requestPayoad) {
+        requestPayoad[`fromDate`] = this.manageDate.objectToDate(requestPayoad.fromDate);
+        requestPayoad[`toDate`] = this.manageDate.objectToDate(requestPayoad.toDate);
+        return this.http.post('/tasks/report', requestPayoad);
     }
 
     saveGoogleLink(requestPayload, projectId) {
         return this.http.post('/projects/' + projectId, requestPayload);
     }
+
 }

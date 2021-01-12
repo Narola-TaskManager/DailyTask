@@ -218,6 +218,7 @@ app-login {
 
 .filter-wrapper .accordion .card {
   border-radius: 0;
+  overflow: visible;
 }
 
 .filter-wrapper .accordion .card-header {

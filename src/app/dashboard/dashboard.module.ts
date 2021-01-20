@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     NgbAccordionModule, NgbPaginationModule,
     NgbTooltipModule, NgbDatepickerModule,
-    NgbModalModule
+    NgbModalModule, NgbTypeaheadModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { ViewUpdatesComponent } from './view-updates/view-updates.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
@@ -29,6 +29,7 @@ import { ProjectsGooglesheetComponent } from './projects-googlesheet/projects-go
         NgbDatepickerModule,
         NgbAccordionModule,
         NgbModalModule,
+        NgbTypeaheadModule,
         NgxPermissionsModule.forChild()
     ]
 })

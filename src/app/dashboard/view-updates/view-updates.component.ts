@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { merge, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { DashboardService } from '../service/dashboard.service';
 import { ManageDateService } from '../service/manage-date.service';
 
@@ -29,7 +31,12 @@ export class ViewUpdatesComponent implements OnInit {
     pageSizeOptions = [2, 5, 10, 15, 20, 25, 50, 100];
     showHistory = false;
     dateFilterError = '';
+    searchProject;
+    @ViewChild('instance') instance: NgbTypeahead;
+    focus$ = new Subject<string>();
+    click$ = new Subject<string>();
 
+    formatter = (x) => x;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -41,7 +48,8 @@ export class ViewUpdatesComponent implements OnInit {
         this.maxDate = this.manageDate.setMaxDate();
 
         this.viewUpdateForm = this.formBuilder.group({
-            projectId: new FormControl('0'),
+            projectId: new FormControl(),
+            projectName: new FormControl(),
             userId: new FormControl('0'),
             itemsPerPage: new FormControl(5),
             currentPage: new FormControl(1),
@@ -62,6 +70,18 @@ export class ViewUpdatesComponent implements OnInit {
     fillProjectDropdown() {
         this.dashboardService.getProject().toPromise().then(res => {
             this.projectsList = res[`data`];
+
+            this.searchProject = (text$: Observable<string>) => {
+                const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+                const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+                const inputFocus$ = this.focus$;
+
+                return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+                    map(term => term === '' ? res[`data`]
+                        : res[`data`].filter(
+                            v => v.projectName.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+                );
+            };
         }).catch(err => {
             this.projectsList = [];
         });
@@ -97,10 +117,16 @@ export class ViewUpdatesComponent implements OnInit {
         this.f[`itemsPerPage`].setValue(itemsPerPage);
     }
 
-    onChangeProject() {
-        const selectedProject = this.f[`projectId`][`value`];
-        if (selectedProject) {
-            this.dashboardService.getUserByProjects(selectedProject).toPromise().then(users => {
+    onChangeProject(event) {
+        const selectedProjectId = this.f[`projectId`][`value`];
+
+        this.projectsList.filter((cValue) => {
+            if (cValue[`projectName`] === event.item[`projectName`]) {
+                this.f[`projectId`].setValue(cValue[`projectId`]);
+            }
+        });
+        if (selectedProjectId) {
+            this.dashboardService.getUserByProjects(selectedProjectId).toPromise().then(users => {
                 if (users && users[`data`]) {
                     this.f[`userId`].setValue('');
                     this.employeeList = users[`data`];
@@ -131,5 +157,10 @@ export class ViewUpdatesComponent implements OnInit {
             selectedFromDate !== currentDate && selectedToDate === currentDate) {
             this.showHistory = true;
         }
+    }
+
+    selected(event) {
+        event.preventDefault();
+        this.f.projectName.setValue(event.item[`projectName`]);
     }
 }

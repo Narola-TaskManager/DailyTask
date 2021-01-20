@@ -11,6 +11,21 @@
                         <ng-template ngbPanelContent>
                             <div class="row">
                                 <div class="col-sm-4">
+                                    <ng-template #rt let-r="result" let-t="term">
+                                        <ngb-highlight [result]="r.projectName" [term]="t"></ngb-highlight>
+                                    </ng-template>
+                                    <div class="form-group mb-0">
+                                        <label for="exampleInputEmail1">Select Project</label>
+                                        <input id="typeahead-basic" type="text" class="form-control"
+                                            formControlName="projectName" [ngbTypeahead]="searchProject"
+                                            typeahead-show-hint="true" placeholder="Select Project"
+                                            (selectItem)="selected($event) ; onChangeProject($event)"
+                                            [resultTemplate]="rt" [inputFormatter]="formatter" #instance="ngbTypeahead"
+                                            (focus)="focus$.next($any($event).target.value)"
+                                            (click)="click$.next($any($event).target.value)" />
+                                    </div>
+                                </div>
+                                <!-- <div class="col-sm-4">
                                     <div class="form-group mb-0">
                                         <label for="exampleInputEmail1">Select Project</label>
                                         <select class="form-control" formControlName="projectId"
@@ -21,7 +36,7 @@
                                             </option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-sm-4">
                                     <div class="form-group mb-0">
                                         <label for="exampleInputEmail1">Select Employee</label>
@@ -99,9 +114,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
                         </ng-template>
                     </ngb-panel>
                 </ngb-accordion>
@@ -112,7 +124,7 @@
                     <th class="update-cell-1">
                         {{ (this.f['groupBy']['value'] === 'User')? 'Project' : 'Employee' }}
                     </th>
-                    <th  class="update-cell-1" *ngIf="showHistory">Date</th>
+                    <th class="update-cell-1" *ngIf="showHistory">Date</th>
                     <th class="update-cell-2">Task</th>
                     <th class="update-cell-3" *ngIf="!showHistory">Description</th>
                     <th class="update-cell-4" *ngIf="!showHistory">Estimated Hour</th>
@@ -147,7 +159,7 @@
                                 <td class="update-cell-4" *ngIf="!showHistory"> {{task.estHr}}</td>
                                 <td class="update-cell-5">
                                     <!-- <span *ngIf="task.isEodUpdate"> -->
-                                        {{task.actualHr}}
+                                    {{task.actualHr}}
                                     <!-- </span> -->
                                 </td>
                                 <td class="update-cell-6" *ngIf="!showHistory">

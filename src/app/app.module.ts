@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
-import { AuthenticationGuard } from './core/guard/authentication.guard';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { LayoutModule } from './layout/layout.module';
 
@@ -24,9 +23,7 @@ import { LayoutModule } from './layout/layout.module';
         LayoutModule,
         NgxPermissionsModule.forRoot()
     ],
-    providers: [
-        AuthenticationGuard
-    ],
+    providers: [],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

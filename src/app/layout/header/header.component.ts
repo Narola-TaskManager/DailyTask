@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import Swal from 'sweetalert2';
 
@@ -13,8 +12,7 @@ export class HeaderComponent implements OnInit {
     isLogin = false;
 
     constructor(
-        private authService: AuthService,
-        private router: Router
+        private authService: AuthService
     ) {
         this.isLogin = this.authService.checkUserLoggedIn();
         this.authService.authStatus.subscribe((message) => {
@@ -33,15 +31,23 @@ export class HeaderComponent implements OnInit {
 
     syncWithEasyCollab() {
         this.authService.syncEasyCollab().toPromise().then(res => {
-            if (res && (res[`errorMessage`] !== '')) {
+            if (res && (res[`errorMessage`] === null)) {
                 window.location.reload();
-            } else if (res && (res[`errorMessage`])) {
+            } else if (res && (res[`errorMessage`] !== null)) {
                 Swal.fire({
                     text: res[`errorMessage`],
                     icon: 'error',
                     confirmButtonText: 'Ok',
                 }).then();
             }
-        }).catch(err => { });
+        }).catch(err => {
+            if (err) {
+                Swal.fire({
+                    text: err[`message`],
+                    icon: 'error',
+                    confirmButtonText: 'Ok',
+                }).then();
+            }
+        });
     }
 }

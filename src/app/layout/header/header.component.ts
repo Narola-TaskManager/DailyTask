@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit {
         }).catch(err => {
             if (err) {
                 Swal.fire({
-                    text: err[`message`],
+                    text: err[`error`][`errorMessage`],
                     icon: 'error',
                     confirmButtonText: 'Ok',
                 }).then();

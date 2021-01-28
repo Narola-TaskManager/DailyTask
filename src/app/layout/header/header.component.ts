@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 export class HeaderComponent implements OnInit {
 
     isLogin = false;
+    loadSyncIcon = false;
 
     constructor(
         private authService: AuthService
@@ -30,10 +31,18 @@ export class HeaderComponent implements OnInit {
     }
 
     syncWithEasyCollab() {
+        this.loadSyncIcon = true;
         this.authService.syncEasyCollab().toPromise().then(res => {
             if (res && (res[`errorMessage`] === null)) {
+                this.loadSyncIcon = false;
                 window.location.reload();
+                Swal.fire({
+                    text: 'Sync Successfully',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                }).then();
             } else if (res && (res[`errorMessage`] !== null)) {
+                this.loadSyncIcon = false;
                 Swal.fire({
                     text: res[`errorMessage`],
                     icon: 'error',
@@ -41,6 +50,7 @@ export class HeaderComponent implements OnInit {
                 }).then();
             }
         }).catch(err => {
+            this.loadSyncIcon = false;
             if (err) {
                 Swal.fire({
                     text: err[`error`][`errorMessage`],

@@ -19,10 +19,11 @@
                                         <input id="typeahead-basic" type="text" class="form-control"
                                             formControlName="projectName" [ngbTypeahead]="searchProject"
                                             typeahead-show-hint="true" placeholder="Select Project"
-                                            (selectItem)="selected($event) ; onChangeProject($event)"
-                                            [resultTemplate]="rt" [inputFormatter]="formatter" #instance="ngbTypeahead"
+                                            (selectItem)="onChangeProject($event)" [resultTemplate]="rt"
+                                            [inputFormatter]="formatter" #instance="ngbTypeahead"
                                             (focus)="focus$.next($any($event).target.value)"
-                                            (click)="click$.next($any($event).target.value)" />
+                                            (click)="click$.next($any($event).target.value)"
+                                            (input)="getProjectName($event)" />
                                     </div>
                                 </div>
                                 <!-- <div class="col-sm-4">
@@ -43,14 +44,17 @@
                                         <select class="form-control" formControlName="userId" placeholder="test"
                                             (change)="getTaskDetail()">
                                             <option value="0">All</option>
-                                            <option *ngFor="let employee of employeeList" [value]="employee.userId">
-                                                {{employee.userName}}
-                                            </option>
+                                            <ng-container>
+                                                <option *ngFor="let employee of employeeList" [value]="employee.userId">
+                                                    {{employee.userName}}
+                                                </option>
+                                            </ng-container>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0">
+                                <!-- <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0"> -->
+                                <div class="col-sm-2">
                                     <div class="form-group mb-0">
                                         <label for="exampleInputEmail1">Group By</label>
                                         <select class="form-control" formControlName="groupBy"
@@ -63,7 +67,8 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0">
+                                <!-- <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0"> -->
+                                <div class="col-sm-2">
                                     <div class="form-group mb-0">
                                         <label> Show entries</label>
                                         <select class="form-control" formControlName="itemsPerPage"
@@ -113,6 +118,15 @@
                                         <small> {{this.dateFilterError}} </small>
                                     </div>
                                 </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label class="mb-4"> </label>
+                                        <button type="button" class="btn btn-danger reset-filter" (click)="resetForm()">
+                                            <i class="fa fa-undo" aria-hidden="true"></i>
+                                            Reset Filters
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </ng-template>
                     </ngb-panel>
@@ -158,9 +172,9 @@
                                 <td class="update-cell-3" *ngIf="!showHistory"> {{task.taskDesc}} </td>
                                 <td class="update-cell-4" *ngIf="!showHistory"> {{task.estHr}}</td>
                                 <td class="update-cell-5">
-                                    <!-- <span *ngIf="task.isEodUpdate"> -->
-                                    {{task.actualHr}}
-                                    <!-- </span> -->
+                                    <span *ngIf="task.isEodUpdate">
+                                        {{task.actualHr}}
+                                    </span>
                                 </td>
                                 <td class="update-cell-6" *ngIf="!showHistory">
                                     <span *ngIf="task.statusTitle === 'REMAINING' && task.isEodUpdate"

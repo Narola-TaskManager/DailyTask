@@ -117,27 +117,48 @@ export class ViewUpdatesComponent implements OnInit {
         this.f[`itemsPerPage`].setValue(itemsPerPage);
     }
 
+    getProjectName(event) {
+        if (!event.target.value) {
+            this.employeeList = [];
+            this.f[`userId`].setValue('0');
+            this.f[`projectId`].setValue(null);
+            this.getTaskDetail();
+        }
+    }
+
     onChangeProject(event) {
-        const selectedProjectId = this.f[`projectId`][`value`];
+        event.preventDefault();
+
+        const selectedProjectName = event.item[`projectName`];
+        this.f.projectName.setValue(selectedProjectName);
 
         this.projectsList.filter((cValue) => {
-            if (cValue[`projectName`] === event.item[`projectName`]) {
+            if (cValue[`projectName`] === selectedProjectName) {
                 this.f[`projectId`].setValue(cValue[`projectId`]);
             }
         });
-        if (selectedProjectId) {
-            this.dashboardService.getUserByProjects(selectedProjectId).toPromise().then(users => {
-                if (users && users[`data`]) {
-                    this.f[`userId`].setValue('');
-                    this.employeeList = users[`data`];
-                }
-                this.getTaskDetail();
-            }).catch(err => {
-                this.employeeList = [];
-            });
+
+        if (selectedProjectName) {
+            this.getUsersByProject(this.f[`projectId`].value);
         } else {
+            this.employeeList = [];
+            this.f[`userId`].setValue('0');
+            this.f[`projectId`].setValue(null);
             this.getTaskDetail();
         }
+    }
+
+
+    getUsersByProject(projectId) {
+        this.dashboardService.getUserByProjects(projectId).toPromise().then(users => {
+            if (users && users[`data`]) {
+                this.f[`userId`].setValue('0');
+                this.employeeList = users[`data`];
+            }
+            this.getTaskDetail();
+        }).catch(err => {
+            this.employeeList = [];
+        });
     }
 
     onChangeDateFilter() {
@@ -153,14 +174,30 @@ export class ViewUpdatesComponent implements OnInit {
             this.getTaskDetail();
         }
 
+        if (selectedFromDate === currentDate && selectedToDate === currentDate) {
+            this.showHistory = false;
+        }
         if (selectedFromDate !== currentDate && selectedToDate !== currentDate ||
             selectedFromDate !== currentDate && selectedToDate === currentDate) {
             this.showHistory = true;
         }
     }
 
-    selected(event) {
-        event.preventDefault();
-        this.f.projectName.setValue(event.item[`projectName`]);
+    resetForm() {
+        this.minDate = this.manageDate.setMinDate();
+        this.maxDate = this.manageDate.setMaxDate();
+
+        // this.viewUpdateForm.reset();
+
+        this.f[`fromDate`].setValue(this.maxDate);
+        this.f[`toDate`].setValue(this.maxDate);
+        this.f[`currentPage`].setValue(1);
+        this.f[`groupBy`].setValue('User');
+        this.f[`itemsPerPage`].setValue(5);
+        this.f[`projectId`].setValue(null);
+        this.f[`projectName`].setValue(null);
+        this.f[`userId`].setValue('0');
+        this.employeeList = [];
+        this.getTaskDetail();
     }
 }

@@ -20,9 +20,13 @@
                         <i class="fa fa-link header-icon" aria-hidden="true" [routerLink]="['/project-links']"></i>
                     </li>
 
-                    <li class="nav-item" ngbTooltip="Sync With EasyCollab" placement="bottom">
+                    <li class="nav-item" ngbTooltip="Sync With EasyCollab" placement="bottom" *ngIf="!loadSyncIcon">
                         <i class="fa fa-refresh header-icon" aria-hidden="true" (click)="syncWithEasyCollab()">
                         </i>
+                    </li>
+                    <li class="nav-item" ngbTooltip="Sync With EasyCollab is in progress" placement="bottom"
+                        *ngIf="loadSyncIcon">
+                        <i class="fa fa-refresh header-icon fa-spin" aria-hidden="true"> </i>
                     </li>
 
                     <li class="nav-item" ngbTooltip="Logout" placement="bottom">

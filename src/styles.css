@@ -253,3 +253,9 @@ app-login {
 .datepicker {
   background-color: white !important;
 }
+
+.reset-filter{
+    margin-top: 31px;
+    width: 100%;
+    height: 39px;
+}

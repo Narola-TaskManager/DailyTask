@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/service/auth.service';
+import { SharedService } from 'src/app/share/shared.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -13,7 +14,8 @@ export class HeaderComponent implements OnInit {
     loadSyncIcon = false;
 
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private shareDataService: SharedService
     ) {
         this.isLogin = this.authService.checkUserLoggedIn();
         this.authService.authStatus.subscribe((message) => {
@@ -32,10 +34,12 @@ export class HeaderComponent implements OnInit {
 
     syncWithEasyCollab() {
         this.loadSyncIcon = true;
+
         this.authService.syncEasyCollab().toPromise().then(res => {
             if (res && (res[`errorMessage`] === null)) {
                 this.loadSyncIcon = false;
-                window.location.reload();
+                // window.location.reload();
+                this.shareDataService.changeMessage(true);
                 Swal.fire({
                     text: 'Sync Successfully',
                     icon: 'success',
@@ -51,6 +55,7 @@ export class HeaderComponent implements OnInit {
             }
         }).catch(err => {
             this.loadSyncIcon = false;
+            this.shareDataService.changeMessage(false);
             if (err) {
                 Swal.fire({
                     text: err[`error`][`errorMessage`],

@@ -4,6 +4,7 @@ import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { DashboardService } from '../service/dashboard.service';
 import { LINKS } from '../../share/constants';
+import { SharedService } from 'src/app/share/shared.service';
 
 @Component({
     selector: 'app-projects-googlesheet',
@@ -27,6 +28,7 @@ export class ProjectsGooglesheetComponent implements OnInit {
         private config: NgbModalConfig,
         private modalService: NgbModal,
         private formBuilder: FormBuilder,
+        private shareDataService: SharedService,
     ) {
         this.config.backdrop = 'static';
         this.config.keyboard = false;
@@ -35,6 +37,14 @@ export class ProjectsGooglesheetComponent implements OnInit {
     ngOnInit(): void {
         this.getProjectData();
         this.initFormGroup();
+        this.shareDataService.currentSyncValue.subscribe(message => {
+            if (message) {
+                this.getProjectData();
+                this.initFormGroup();
+                this.shareDataService.changeMessage(false);
+            }
+        });
+
     }
 
     getProjectData() {

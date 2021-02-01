@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { SharedService } from 'src/app/share/shared.service';
 import Swal from 'sweetalert2';
 import { DashboardService } from '../service/dashboard.service';
 
@@ -30,6 +31,7 @@ export class AddTaskComponent implements OnInit {
     constructor(
         private dashboardService: DashboardService,
         private formBuilder: FormBuilder,
+        private shareDataService: SharedService,
     ) {
         this.userName = localStorage.getItem('userName') || '';
     }
@@ -38,6 +40,14 @@ export class AddTaskComponent implements OnInit {
         this.initFormGroup();
         this.getProjectList();
         this.getTaskList();
+        this.shareDataService.currentSyncValue.subscribe(message => {
+            if (message) {
+                this.initFormGroup();
+                this.getProjectList();
+                this.getTaskList();
+                this.shareDataService.changeMessage(false);
+            }
+        });
     }
 
     // initialize form group

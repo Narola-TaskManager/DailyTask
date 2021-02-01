@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgbDateStruct, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { merge, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { SharedService } from 'src/app/share/shared.service';
 import { DashboardService } from '../service/dashboard.service';
 import { ManageDateService } from '../service/manage-date.service';
 
@@ -41,7 +42,8 @@ export class ViewUpdatesComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private dashboardService: DashboardService,
-        private manageDate: ManageDateService
+        private manageDate: ManageDateService,
+        private shareDataService: SharedService
     ) {
         this.userName = localStorage.getItem('userName') || '';
         this.minDate = this.manageDate.setMinDate();
@@ -57,12 +59,19 @@ export class ViewUpdatesComponent implements OnInit {
             fromDate: new FormControl(this.maxDate),
             toDate: new FormControl(this.maxDate)
         });
-
+        this.shareDataService.changeMessage(JSON.stringify(this.viewUpdateForm.value));
     }
 
     ngOnInit(): void {
         this.fillProjectDropdown();
         this.getTaskDetail();
+        this.shareDataService.currentSyncValue.subscribe(message => {
+            if (message) {
+                this.fillProjectDropdown();
+                this.getTaskDetail();
+                this.shareDataService.changeMessage(false);
+            }
+        });
     }
 
     get f() { return this.viewUpdateForm.controls; }

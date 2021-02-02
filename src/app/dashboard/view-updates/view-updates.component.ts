@@ -59,7 +59,6 @@ export class ViewUpdatesComponent implements OnInit {
             fromDate: new FormControl(this.maxDate),
             toDate: new FormControl(this.maxDate)
         });
-        this.shareDataService.changeMessage(JSON.stringify(this.viewUpdateForm.value));
     }
 
     ngOnInit(): void {

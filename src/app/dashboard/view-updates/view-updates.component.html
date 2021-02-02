@@ -9,125 +9,135 @@
                 <ngb-accordion #acc="ngbAccordion">
                     <ngb-panel title="Filters">
                         <ng-template ngbPanelContent>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <ng-template #rt let-r="result" let-t="term">
-                                        <ngb-highlight [result]="r.projectName" [term]="t"></ngb-highlight>
-                                    </ng-template>
-                                    <div class="form-group mb-0">
-                                        <label for="exampleInputEmail1">Select Project</label>
-                                        <input id="typeahead-basic" type="text" class="form-control"
-                                            formControlName="projectName" [ngbTypeahead]="searchProject"
-                                            typeahead-show-hint="true" placeholder="Select Project"
-                                            (selectItem)="onChangeProject($event)" [resultTemplate]="rt"
-                                            [inputFormatter]="formatter" #instance="ngbTypeahead"
-                                            (focus)="focus$.next($any($event).target.value)"
-                                            (click)="click$.next($any($event).target.value)"
-                                            (input)="getProjectName($event)" />
+                            <ng-container *ngIf="projectsList.length > 0">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <ng-template #rt let-r="result" let-t="term">
+                                            <ngb-highlight [result]="r.projectName" [term]="t"></ngb-highlight>
+                                        </ng-template>
+                                        <div class="form-group mb-0">
+                                            <label for="exampleInputEmail1">Select Project</label>
+                                            <input id="typeahead-basic" type="text" class="form-control"
+                                                formControlName="projectName" [ngbTypeahead]="searchProject"
+                                                typeahead-show-hint="true" placeholder="Select Project"
+                                                (selectItem)="onChangeProject($event)" [resultTemplate]="rt"
+                                                [inputFormatter]="formatter" #instance="ngbTypeahead"
+                                                (focus)="focus$.next($any($event).target.value)"
+                                                (click)="click$.next($any($event).target.value)"
+                                                (input)="getProjectName($event)" />
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- <div class="col-sm-4">
-                                    <div class="form-group mb-0">
-                                        <label for="exampleInputEmail1">Select Project</label>
-                                        <select class="form-control" formControlName="projectId"
-                                            (change)="onChangeProject()">
-                                            <option value="0">All</option>
-                                            <option *ngFor="let project of projectsList" [value]="project.projectId">
-                                                {{project.projectName}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div> -->
-                                <div class="col-sm-4">
-                                    <div class="form-group mb-0">
-                                        <label for="exampleInputEmail1">Select Employee</label>
-                                        <select class="form-control" formControlName="userId" placeholder="test"
-                                            (change)="getTaskDetail()">
-                                            <option value="0">All</option>
-                                            <ng-container>
-                                                <option *ngFor="let employee of employeeList" [value]="employee.userId">
-                                                    {{employee.userName}}
+                                    <!-- <div class="col-sm-4">
+                                        <div class="form-group mb-0">
+                                            <label for="exampleInputEmail1">Select Project</label>
+                                            <select class="form-control" formControlName="projectId"
+                                                (change)="onChangeProject()">
+                                                <option value="0">All</option>
+                                                <option *ngFor="let project of projectsList" [value]="project.projectId">
+                                                    {{project.projectName}}
                                                 </option>
-                                            </ng-container>
-                                        </select>
+                                            </select>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-sm-4">
+                                        <div class="form-group mb-0">
+                                            <label for="exampleInputEmail1">Select Employee</label>
+                                            <select class="form-control" formControlName="userId" placeholder="test"
+                                                (change)="getTaskDetail()">
+                                                <option value="0">All</option>
+                                                <ng-container>
+                                                    <option *ngFor="let employee of employeeList"
+                                                        [value]="employee.userId">
+                                                        {{employee.userName}}
+                                                    </option>
+                                                </ng-container>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0"> -->
-                                <div class="col-sm-2">
-                                    <div class="form-group mb-0">
-                                        <label for="exampleInputEmail1">Group By</label>
-                                        <select class="form-control" formControlName="groupBy"
-                                            (change)="getTaskDetail()">
-                                            <option *ngFor="let groupByOption of groupByOptions"
-                                                [value]="groupByOption">
-                                                {{groupByOption}}
-                                            </option>
-                                        </select>
+                                    <!-- <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0"> -->
+                                    <div class="col-sm-2">
+                                        <div class="form-group mb-0">
+                                            <label for="exampleInputEmail1">Group By</label>
+                                            <select class="form-control" formControlName="groupBy"
+                                                (change)="getTaskDetail()">
+                                                <option *ngFor="let groupByOption of groupByOptions"
+                                                    [value]="groupByOption">
+                                                    {{groupByOption}}
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0"> -->
-                                <div class="col-sm-2">
-                                    <div class="form-group mb-0">
-                                        <label> Show entries</label>
-                                        <select class="form-control" formControlName="itemsPerPage"
-                                            (change)="changePagesize()">
-                                            <option [ngValue]="pageSizeOption"
-                                                *ngFor="let pageSizeOption of pageSizeOptions">
-                                                {{ pageSizeOption }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>From Date</label>
-                                        <div class="input-group">
-                                            <input class="form-control datepicker" placeholder="yyyy-mm-dd" readonly
-                                                formControlName='fromDate' name="fromDate" ngbDatepicker
-                                                #fromDate="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate"
-                                                [positionTarget]="buttonEl" (ngModelChange)="onChangeDateFilter()">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary calendar fa fa-calendar"
-                                                    #buttonEl (click)="fromDate.toggle()" type="button">
-                                                </button>
-                                            </div>
+                                    <!-- <div class="col-sm-2" *ngIf="dailyUpdateDetail.length > 0"> -->
+                                    <div class="col-sm-2">
+                                        <div class="form-group mb-0">
+                                            <label> Show entries</label>
+                                            <select class="form-control" formControlName="itemsPerPage"
+                                                (change)="changePagesize()">
+                                                <option [ngValue]="pageSizeOption"
+                                                    *ngFor="let pageSizeOption of pageSizeOptions">
+                                                    {{ pageSizeOption }}
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>To Date</label>
-                                        <div class="input-group">
-                                            <input class="form-control datepicker" placeholder="yyyy-mm-dd" readonly
-                                                formControlName='toDate' name="toDate" ngbDatepicker
-                                                #toDate="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate"
-                                                [positionTarget]="buttonEl" (ngModelChange)="onChangeDateFilter()">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary calendar fa fa-calendar"
-                                                    #buttonEl (click)="toDate.toggle()" type="button">
-                                                </button>
+                                <div class="row mt-3">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>From Date</label>
+                                            <div class="input-group">
+                                                <input class="form-control datepicker" placeholder="yyyy-mm-dd" readonly
+                                                    formControlName='fromDate' name="fromDate" ngbDatepicker
+                                                    #fromDate="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate"
+                                                    [positionTarget]="buttonEl" (ngModelChange)="onChangeDateFilter()">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary calendar fa fa-calendar"
+                                                        #buttonEl (click)="fromDate.toggle()" type="button">
+                                                    </button>
+                                                </div>
                                             </div>
-
                                         </div>
                                     </div>
-                                    <div class="error-message">
-                                        <small> {{this.dateFilterError}} </small>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>To Date</label>
+                                            <div class="input-group">
+                                                <input class="form-control datepicker" placeholder="yyyy-mm-dd" readonly
+                                                    formControlName='toDate' name="toDate" ngbDatepicker
+                                                    #toDate="ngbDatepicker" [maxDate]="maxDate" [minDate]="minDate"
+                                                    [positionTarget]="buttonEl" (ngModelChange)="onChangeDateFilter()">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary calendar fa fa-calendar"
+                                                        #buttonEl (click)="toDate.toggle()" type="button">
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="error-message">
+                                            <small> {{this.dateFilterError}} </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label class="mb-4"> </label>
+                                            <button type="button" class="btn btn-danger reset-filter"
+                                                (click)="resetForm()">
+                                                <i class="fa fa-undo" aria-hidden="true"></i>
+                                                Reset Filters
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <div class="form-group">
-                                        <label class="mb-4"> </label>
-                                        <button type="button" class="btn btn-danger reset-filter" (click)="resetForm()">
-                                            <i class="fa fa-undo" aria-hidden="true"></i>
-                                            Reset Filters
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            </ng-container>
+                            <ng-container>
+                                <p class="filter-loading" *ngIf="projectsList.length === 0">
+                                    <i class="fa fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+                                    Loading
+                                </p>
+                            </ng-container>
                         </ng-template>
                     </ngb-panel>
                 </ngb-accordion>

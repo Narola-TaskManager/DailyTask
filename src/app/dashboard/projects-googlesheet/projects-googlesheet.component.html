@@ -102,7 +102,9 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" (click)=" onSubmit()"> Save </button>
+        <button type="submit" class="btn btn-primary" (click)=" onSubmit()"> 
+            <i class="fa fa-spinner fa-spin mr-2" aria-hidden="true" *ngIf="loader"></i>
+            Save </button>
         <div class="error-message">
             <small *ngIf="backendError" class="error-message">
                 {{backendError}}

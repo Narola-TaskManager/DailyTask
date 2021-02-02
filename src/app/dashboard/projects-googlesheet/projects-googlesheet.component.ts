@@ -22,6 +22,7 @@ export class ProjectsGooglesheetComponent implements OnInit {
     isEditLink = false;
     selectedProjectForEdit = {};
     linkConstant = LINKS;
+    loader = false;
 
     constructor(
         private dashboardService: DashboardService,
@@ -110,11 +111,12 @@ export class ProjectsGooglesheetComponent implements OnInit {
         if (!this.googleLinkForm.valid) {
             return;
         }
+        this.loader = true;
         this.backendError = '';
         const fromValue = this.googleLinkForm.value;
         fromValue[`projectId`] = Number(fromValue[`projectId`]);
         this.dashboardService.saveGoogleLink(fromValue, fromValue[`projectId`]).toPromise().then(res => {
-
+            this.loader = false;
             this.modalService.dismissAll();
             this.googleLinkForm.reset();
             this.submitted = false;
@@ -133,6 +135,7 @@ export class ProjectsGooglesheetComponent implements OnInit {
             this.getProjectData();
             this.isEditLink = false;
         }).catch(err => {
+            this.loader = false;
             if (err && err.error) {
                 this.backendError = err.error[`errorMessage`];
             }
